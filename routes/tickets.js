@@ -213,6 +213,36 @@ router.post('/confirm_payment', async (req, res) => {
         // Redirect to home with success message
         res.redirect(`/?payment=success&ref=${encodeURIComponent(esewa_ref.trim())}`);
 
+        // ============================================
+        // REAL-TIME NOTIFICATION (SOCKET.IO)
+        // ============================================
+        try {
+            const io = req.app.get('io');
+            if (io) {
+                // Fetch match details for the notification
+                const matchResult = await db.query(`
+                    SELECT m.team_home, m.team_away, m.venue, t.quantity, t.total_amount
+                    FROM tickets t
+                    JOIN matches m ON t.match_id = m.id
+                    WHERE t.id = $1
+                `, [ticket_id]);
+
+                if (matchResult.rows.length > 0) {
+                    const info = matchResult.rows[0];
+                    io.to('admin_notifications').emit('ticket_sold', {
+                        amount: info.total_amount,
+                        count: info.quantity,
+                        match: `${info.team_home} vs ${info.team_away}`,
+                        buyer: 'Manual Verification',
+                        timestamp: new Date()
+                    });
+                    console.log('📡 Emitted ticket_sold event (Manual)');
+                }
+            }
+        } catch (socketError) {
+            console.error('⚠️ Socket emission failed:', socketError);
+        }
+
     } catch (error) {
         console.error('❌ Payment confirmation error:', error);
         res.status(500).render('error', {
@@ -221,6 +251,13 @@ router.post('/confirm_payment', async (req, res) => {
             errorCode: 500
         });
     }
+});
+
+/**
+ * GET /confirm_payment - Catch GET requests to prevent 404
+ */
+router.get('/confirm_payment', (req, res) => {
+    res.redirect('/');
 });
 
 module.exports = router;
