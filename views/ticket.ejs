@@ -289,9 +289,58 @@
                 </div>
 
                 <div class="actions">
+                    <button onclick="downloadTicket()" class="btn btn-primary btn-block btn-download"
+                        style="background: linear-gradient(135deg, #3b82f6, #2563eb); margin-bottom: 1rem;">
+                        📥 Download Ticket
+                    </button>
                     <a href="/" class="btn btn-outline btn-block">← Back to Matches</a>
                 </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        async function downloadTicket() {
+            const ticketCard = document.querySelector('.ticket-card');
+            if (!ticketCard) return;
+
+            try {
+                // Show loading
+                const btn = document.querySelector('.btn-download');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '⏳ Generating...';
+                btn.disabled = true;
+
+                // Wait for QR image to load
+                const qrImg = document.querySelector('.qr-container img');
+                if (qrImg && !qrImg.complete) {
+                    await new Promise(resolve => {
+                        qrImg.onload = resolve;
+                        setTimeout(resolve, 2000); // Timeout fallback
+                    });
+                }
+
+                // Generate canvas
+                const canvas = await html2canvas(ticketCard, {
+                    backgroundColor: '#1a1a2e',
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true
+                });
+
+                // Download as PNG
+                const link = document.createElement('a');
+                link.download = 'goalkick-ticket.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('Could not download ticket. Please take a screenshot instead.');
+            }
+        }
+    </script>
 </body>
 
 </html>
