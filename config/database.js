@@ -6,16 +6,27 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const pool = new Pool({
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT) || 5432,
-    database: process.env.DB_NAME || 'goalkick',
-    user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || '',
-    max: 20, // Maximum number of clients in the pool
-    idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
-    connectionTimeoutMillis: 2000, // Return an error after 2 seconds if connection could not be established
-});
+// Support both DATABASE_URL and individual DB_* environment variables
+const poolConfig = process.env.DATABASE_URL
+    ? {
+        connectionString: process.env.DATABASE_URL,
+        ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+        max: 20,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 10000,
+    }
+    : {
+        host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT) || 5432,
+        database: process.env.DB_NAME || 'goalkick',
+        user: process.env.DB_USER || 'postgres',
+        password: process.env.DB_PASSWORD || '',
+        max: 20,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 2000,
+    };
+
+const pool = new Pool(poolConfig);
 
 // Test connection on startup
 pool.on('connect', () => {
@@ -56,19 +67,19 @@ const getClient = async () => {
     const client = await pool.connect();
     const query = client.query.bind(client);
     const release = client.release.bind(client);
-    
+
     // Set a timeout of 5 seconds, after which we will log this client's last query
     const timeout = setTimeout(() => {
         console.error('⚠️ A client has been checked out for more than 5 seconds!');
     }, 5000);
-    
+
     client.release = () => {
         clearTimeout(timeout);
         client.query = query;
         client.release = release;
         return release();
     };
-    
+
     return client;
 };
 
