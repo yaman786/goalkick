@@ -1,128 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('header', { title: title, active: 'matches' }) %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %> | GoalKick Admin
-    </title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/admin.css">
-</head>
+    <div class="page-header">
+        <h1 class="page-title">🏟️ Manage Matches</h1>
+        <a href="/admin/matches/new" class="btn-admin btn-admin-primary">+ Add Match</a>
+    </div>
 
-<body class="admin-body">
-    <header class="admin-header">
-        <a href="/admin" class="admin-logo">
-            <span>⚽ GoalKick</span>
-            <span>Admin</span>
-        </a>
-
-        <nav class="admin-nav">
-            <a href="/admin" class="admin-nav-link">📊 Dashboard</a>
-            <a href="/admin/matches" class="admin-nav-link active">🏟️ Matches</a>
-            <a href="/admin/tickets" class="admin-nav-link">🎟️ Tickets</a>
-            <a href="/" class="admin-nav-link" target="_blank">🌐 View Site</a>
-        </nav>
-
-        <div class="admin-user">
-            <% if (typeof admin !=='undefined' && admin) { %>
-                👤 <%= admin.name || admin.username %>
-                    <a href="/admin/logout" class="btn-admin btn-admin-secondary btn-admin-sm">Logout</a>
-                    <% } %>
-        </div>
-    </header>
-
-    <main class="admin-container">
-        <% if (typeof success !=='undefined' && success) { %>
-            <div class="alert alert-success">
-                <%= success %>
-            </div>
-            <% } %>
-                <% if (typeof error !=='undefined' && error) { %>
-                    <div class="alert alert-error">
-                        <%= error %>
-                    </div>
-                    <% } %>
-
-                        <div class="page-header">
-                            <h1 class="page-title">🏟️ Manage Matches</h1>
-                            <a href="/admin/matches/new" class="btn-admin btn-admin-primary">+ Add Match</a>
-                        </div>
-
-                        <div class="admin-table-wrapper">
-                            <table class="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Match</th>
-                                        <th>Date</th>
-                                        <th>Venue</th>
-                                        <th>Price</th>
-                                        <th>Seats</th>
-                                        <th>Sold</th>
-                                        <th>Revenue</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% if (matches.length===0) { %>
-                                        <tr>
-                                            <td colspan="9" style="text-align: center; color: var(--admin-text-muted);">
-                                                No matches found</td>
-                                        </tr>
+    <div class="admin-table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Match</th>
+                    <th>Date</th>
+                    <th>Venue</th>
+                    <th>Price</th>
+                    <th>Seats</th>
+                    <th>Sold</th>
+                    <th>Revenue</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (matches.length===0) { %>
+                    <tr>
+                        <td colspan="9" style="text-align: center; color: var(--admin-text-muted);">
+                            No matches found</td>
+                    </tr>
+                    <% } else { %>
+                        <% matches.forEach(function(m) { %>
+                            <tr>
+                                <td><strong>
+                                        <%= m.team_home %>
+                                    </strong> vs <strong>
+                                        <%= m.team_away %>
+                                    </strong></td>
+                                <td>
+                                    <%= new Date(m.match_date).toLocaleDateString('en-NP', { month: 'short' ,
+                                        day: 'numeric' , year: 'numeric' }) %>
+                                </td>
+                                <td>
+                                    <%= m.venue %>
+                                </td>
+                                <td>Rs. <%= Number(m.price).toLocaleString() %>
+                                </td>
+                                <td>
+                                    <%= m.available_seats %> / <%= m.total_seats %>
+                                </td>
+                                <td>
+                                    <%= m.tickets_sold || 0 %>
+                                </td>
+                                <td>Rs. <%= Number(m.revenue || 0).toLocaleString() %>
+                                </td>
+                                <td>
+                                    <% if (m.is_active) { %>
+                                        <span class="badge badge-success">Active</span>
                                         <% } else { %>
-                                            <% matches.forEach(function(m) { %>
-                                                <tr>
-                                                    <td><strong>
-                                                            <%= m.team_home %>
-                                                        </strong> vs <strong>
-                                                            <%= m.team_away %>
-                                                        </strong></td>
-                                                    <td>
-                                                        <%= new Date(m.match_date).toLocaleDateString('en-NP', {
-                                                            month: 'short' , day: 'numeric' , year: 'numeric' }) %>
-                                                    </td>
-                                                    <td>
-                                                        <%= m.venue %>
-                                                    </td>
-                                                    <td>Rs. <%= Number(m.price).toLocaleString() %>
-                                                    </td>
-                                                    <td>
-                                                        <%= m.available_seats %> / <%= m.total_seats %>
-                                                    </td>
-                                                    <td>
-                                                        <%= m.tickets_sold || 0 %>
-                                                    </td>
-                                                    <td>Rs. <%= Number(m.revenue || 0).toLocaleString() %>
-                                                    </td>
-                                                    <td>
-                                                        <% if (m.is_active) { %>
-                                                            <span class="badge badge-success">Active</span>
-                                                            <% } else { %>
-                                                                <span class="badge badge-muted">Inactive</span>
-                                                                <% } %>
-                                                    </td>
-                                                    <td>
-                                                        <a href="/admin/matches/<%= m.id %>/edit"
-                                                            class="btn-admin btn-admin-secondary btn-admin-sm">Edit</a>
-                                                        <form action="/admin/matches/<%= m.id %>/toggle" method="POST"
-                                                            style="display: inline;">
-                                                            <button type="submit"
-                                                                class="btn-admin btn-admin-sm <%= m.is_active ? 'btn-admin-danger' : 'btn-admin-primary' %>">
-                                                                <%= m.is_active ? 'Disable' : 'Enable' %>
-                                                            </button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                                <% }); %>
-                                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div>
-    </main>
-</body>
+                                            <span class="badge badge-muted">Inactive</span>
+                                            <% } %>
+                                </td>
+                                <td>
+                                    <a href="/admin/matches/<%= m.id %>/edit"
+                                        class="btn-admin btn-admin-secondary btn-admin-sm">Edit</a>
+                                    <form action="/admin/matches/<%= m.id %>/toggle" method="POST"
+                                        style="display: inline;">
+                                        <button type="submit"
+                                            class="btn-admin btn-admin-sm <%= m.is_active ? 'btn-admin-danger' : 'btn-admin-primary' %>">
+                                            <%= m.is_active ? 'Disable' : 'Enable' %>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }); %>
+                                <% } %>
+            </tbody>
+        </table>
+    </div>
 
-</html>
+    <%- include('footer') %>
