@@ -1,0 +1,89 @@
+<%- include('layout', { title: title, active: 'staff' }) %>
+
+    <div class="page-header">
+        <h1 class="page-title">👥 Manage Staff</h1>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Create Staff Section -->
+        <section class="admin-section">
+            <h2 class="section-title">Create New Staff Member</h2>
+            <form action="/admin/staff" method="POST" class="admin-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="e.g. Gate A Scanner">
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required placeholder="e.g. gatekeeper1"
+                        autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Min 6 characters"
+                        autocomplete="new-password">
+                </div>
+
+                <button type="submit" class="btn-admin btn-admin-primary">
+                    ➕ Create Staff
+                </button>
+            </form>
+        </section>
+
+        <!-- Staff List Section -->
+        <section class="admin-section">
+            <h2 class="section-title">Staff List</h2>
+
+            <% if (staff.length===0) { %>
+                <div class="alert alert-error"
+                    style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">
+                    No staff members found. Create one to get started.
+                </div>
+                <% } else { %>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Username</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% staff.forEach(function(s) { %>
+                                    <tr>
+                                        <td>
+                                            <%= s.name || s.username %>
+                                        </td>
+                                        <td><code style="color: var(--admin-primary);"><%= s.username %></code></td>
+                                        <td>
+                                            <%= new Date(s.created_at).toLocaleDateString() %>
+                                        </td>
+                                        <td>
+                                            <form action="/admin/staff/<%= s.id %>/delete" method="POST"
+                                                onsubmit="return confirm('Are you sure you want to delete this staff member?');"
+                                                style="display: inline;">
+                                                <button type="submit"
+                                                    class="btn-admin btn-admin-danger btn-admin-sm">🗑️ Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } %>
+        </section>
+    </div>
+
+    <div class="admin-section">
+        <h3 class="section-title">ℹ️ About Staff Accounts</h3>
+        <ul style="color: var(--admin-text-muted); padding-left: 1.5rem; line-height: 1.6;">
+            <li>Staff members can <strong>ONLY</strong> access the Gatekeeper Scanner page.</li>
+            <li>They cannot access this admin dashboard to see revenue or matches.</li>
+            <li>They can validate tickets using the QR scanner.</li>
+        </ul>
+    </div>

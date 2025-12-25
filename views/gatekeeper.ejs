@@ -358,9 +358,21 @@
 <body>
     <div class="gatekeeper-page">
         <header class="gatekeeper-header">
-            <h1 class="gatekeeper-title">
-                🔐 Gatekeeper Scanner
-            </h1>
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; width: 100%;">
+                <h1 class="gatekeeper-title">
+                    🔐 Scanner
+                </h1>
+                <div style="display: flex; gap: 0.5rem;">
+                    <% if (typeof admin !=='undefined' && admin.role==='admin' ) { %>
+                        <a href="/admin" class="btn-sm"
+                            style="background: rgba(255,255,255,0.1); padding: 0.5rem; border-radius: 8px; text-decoration: none; font-size: 0.8rem;">⬅️
+                            Admin</a>
+                        <% } %>
+                            <a href="/admin/logout" class="btn-sm"
+                                style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 0.5rem; border-radius: 8px; text-decoration: none; font-size: 0.8rem;">Logout</a>
+                </div>
+            </div>
         </header>
 
         <div class="scanner-container">

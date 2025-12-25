@@ -6,6 +6,12 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
+const { requireGatekeeper } = require('../middleware/adminAuth');
+
+// Protect all Gatekeeper routes
+router.use('/gatekeeper', requireGatekeeper);
+router.use('/validate_ticket', requireGatekeeper); // Also protect API endpoint
+router.use('/validate', requireGatekeeper);
 
 /**
  * GET /gatekeeper - Mobile QR scanner page

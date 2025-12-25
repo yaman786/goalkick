@@ -30,7 +30,16 @@
             <a href="/admin/tickets"
                 class="admin-nav-link <%= typeof active !== 'undefined' && active === 'tickets' ? 'active' : '' %>">🎟️
                 Tickets</a>
-            <a href="/" class="admin-nav-link" target="_blank">🌐 View Site</a>
+
+            <% if (typeof admin !=='undefined' && admin.role==='admin' ) { %>
+                <a href="/admin/staff"
+                    class="admin-nav-link <%= typeof active !== 'undefined' && active === 'staff' ? 'active' : '' %>">👥
+                    Staff</a>
+                <% } %>
+
+                    <a href="/gatekeeper" class="admin-nav-link">🔐 Gatekeeper</a>
+
+                    <a href="/" class="admin-nav-link" target="_blank">🌐 View Site</a>
         </nav>
 
         <div class="admin-user">

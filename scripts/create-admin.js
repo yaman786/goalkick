@@ -45,6 +45,7 @@ async function createAdmin() {
                 username VARCHAR(50) UNIQUE NOT NULL,
                 password_hash VARCHAR(255) NOT NULL,
                 name VARCHAR(100),
+                role VARCHAR(20) DEFAULT 'admin' NOT NULL CHECK (role IN ('admin', 'staff')),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
@@ -62,8 +63,8 @@ async function createAdmin() {
 
         // Insert admin
         await pool.query(
-            'INSERT INTO admins (username, password_hash, name) VALUES ($1, $2, $3)',
-            [username, passwordHash, name]
+            'INSERT INTO admins (username, password_hash, name, role) VALUES ($1, $2, $3, $4)',
+            [username, passwordHash, name, 'admin']
         );
 
         console.log('');

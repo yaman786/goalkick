@@ -60,13 +60,13 @@ router.post('/login', async (req, res) => {
         req.session.admin = {
             id: admin.id,
             username: admin.username,
-            name: admin.name
+            name: admin.name,
+            role: admin.role || 'admin'
         };
 
-        console.log(`✅ Admin logged in: ${admin.username}`);
-
-        // Redirect to intended destination or dashboard
-        const returnTo = req.session.returnTo || '/admin';
+        // Redirect based on role if no returnTo
+        const defaultRedirect = req.session.admin.role === 'staff' ? '/gatekeeper' : '/admin';
+        const returnTo = req.session.returnTo || defaultRedirect;
         delete req.session.returnTo;
         res.redirect(returnTo);
 
@@ -395,6 +395,77 @@ router.post('/tickets/:id/reject', async (req, res) => {
     } catch (error) {
         console.error('❌ Reject payment error:', error);
         res.redirect('/admin/tickets?error=Failed to reject payment');
+    }
+});
+
+// ============================================
+// STAFF MANAGEMENT
+// ============================================
+
+/**
+ * GET /admin/staff - List all staff
+ */
+router.get('/staff', async (req, res) => {
+    try {
+        const result = await db.query('SELECT * FROM admins WHERE role = $1 ORDER BY created_at DESC', ['staff']);
+        res.render('admin/staff', {
+            title: 'Manage Staff',
+            staff: result.rows
+        });
+    } catch (error) {
+        console.error('❌ Staff list error:', error);
+        res.render('admin/staff', {
+            title: 'Manage Staff',
+            staff: [],
+            error: 'Failed to load staff list'
+        });
+    }
+});
+
+/**
+ * POST /admin/staff - Create new staff
+ */
+router.post('/staff', async (req, res) => {
+    try {
+        const { username, password, name } = req.body;
+
+        // Check if username exists
+        const existing = await db.query('SELECT id FROM admins WHERE username = $1', [username.toLowerCase()]);
+        if (existing.rows.length > 0) {
+            return res.redirect('/admin/staff?error=Username already exists');
+        }
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Insert staff
+        await db.query(`
+            INSERT INTO admins (username, password_hash, name, role)
+            VALUES ($1, $2, $3, 'staff')
+        `, [username.toLowerCase(), hashedPassword, name]);
+
+        res.redirect('/admin/staff?success=Staff member created');
+    } catch (error) {
+        console.error('❌ Create staff error:', error);
+        res.redirect('/admin/staff?error=Failed to create staff');
+    }
+});
+
+/**
+ * POST /admin/staff/:id/delete - Delete staff
+ */
+router.post('/staff/:id/delete', async (req, res) => {
+    try {
+        // Prevent deleting self (though UI restricts accessing this route usually)
+        if (req.params.id === req.session.adminId) {
+            return res.redirect('/admin/staff?error=Cannot delete yourself');
+        }
+
+        await db.query('DELETE FROM admins WHERE id = $1 AND role = $2', [req.params.id, 'staff']);
+        res.redirect('/admin/staff?success=Staff member deleted');
+    } catch (error) {
+        console.error('❌ Delete staff error:', error);
+        res.redirect('/admin/staff?error=Failed to delete staff');
     }
 });
 
