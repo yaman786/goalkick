@@ -239,9 +239,12 @@ function showResult(result) {
         resultOverlay.classList.add('invalid');
         resultIcon.textContent = '❌';
 
+        let soundType = 'error';
+
         switch (result.status) {
             case 'ALREADY_USED':
                 resultTitle.textContent = 'ALREADY USED';
+                soundType = 'used';
                 break;
             case 'INVALID':
                 resultTitle.textContent = 'INVALID';
@@ -266,8 +269,8 @@ function showResult(result) {
             resultDetails.style.display = 'none';
         }
 
-        // Play error sound
-        playSound('error');
+        // Play error/used sound
+        playSound(soundType);
     }
 }
 
@@ -298,33 +301,48 @@ function validateManual() {
 }
 
 /**
- * Play feedback sound
+ * Play feedback sound and vibration
  */
 function playSound(type) {
-    // Create audio context for feedback sounds
-    try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-
-        if (type === 'success') {
-            oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5
-            oscillator.frequency.setValueAtTime(1318.5, audioContext.currentTime + 0.1); // E6
-        } else {
-            oscillator.frequency.setValueAtTime(220, audioContext.currentTime); // A3
-            oscillator.frequency.setValueAtTime(196, audioContext.currentTime + 0.1); // G3
+    // Stop any currently playing sounds
+    ['sound-success', 'sound-fail', 'sound-used'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.pause();
+            el.currentTime = 0;
         }
+    });
 
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    try {
+        if (type === 'success') {
+            // SUCCESS: Crisp Chime + Short Vibration
+            const audio = document.getElementById('sound-success');
+            if (audio) audio.play().catch(e => console.log('Audio blocked:', e));
 
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.3);
+            if (navigator.vibrate) {
+                navigator.vibrate(200); // Single sharp buzz
+            }
+        }
+        else if (type === 'used') {
+            // USED: Double Beep + Double Vibration
+            const audio = document.getElementById('sound-used');
+            if (audio) audio.play().catch(e => console.log('Audio blocked:', e));
+
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]); // Buzz-pause-Buzz
+            }
+        }
+        else {
+            // FAIL: Low Error + Long Vibration
+            const audio = document.getElementById('sound-fail');
+            if (audio) audio.play().catch(e => console.log('Audio blocked:', e));
+
+            if (navigator.vibrate) {
+                navigator.vibrate(500); // Long error buzz
+            }
+        }
     } catch (e) {
-        // Audio not supported
+        console.error('Feedback error:', e);
     }
 }
 
