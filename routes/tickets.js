@@ -196,10 +196,12 @@ router.post('/confirm_payment', async (req, res) => {
         }
 
         // Update payment with eSewa reference
-        await db.query(`
+        const updateResult = await db.query(`
             UPDATE payments SET esewa_ref = $1, status = 'AWAITING_VERIFICATION'
             WHERE ticket_id = $2
         `, [esewa_ref.trim(), ticket_id]);
+
+        console.log(`📝 Payment Update Result: ${updateResult.rowCount} rows affected for Ticket ${ticket_id}, Ref: ${esewa_ref}`);
 
         // Get ticket info for confirmation
         const ticketResult = await db.query(`
