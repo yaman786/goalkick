@@ -116,6 +116,17 @@
                                                 <% } else { %>
                                                     <span>—</span>
                                                     <% } %>
+
+                                                        <!-- Delete Button (Always Available) -->
+                                                        <form action="/admin/tickets/<%= t.id %>/delete" method="POST"
+                                                            style="display: inline;"
+                                                            onsubmit="return confirm('⚠️ Are you sure you want to PERMANENTLY delete this ticket?\n\nThis cannot be undone.');">
+                                                            <button type="submit"
+                                                                class="btn-admin btn-admin-sm btn-admin-danger"
+                                                                title="Delete Ticket">
+                                                                🗑️
+                                                            </button>
+                                                        </form>
                                     </div>
                                 </td>
                             </tr>

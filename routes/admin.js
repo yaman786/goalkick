@@ -398,6 +398,47 @@ router.post('/tickets/:id/reject', async (req, res) => {
     }
 });
 
+/**
+ * POST /admin/tickets/:id/delete - Delete ticket (and payments)
+ */
+router.post('/tickets/:id/delete', async (req, res) => {
+    try {
+        const ticketId = req.params.id;
+
+        // Get ticket details to verify if we need to restore seats
+        const ticketResult = await db.query(
+            'SELECT match_id, quantity, status FROM tickets WHERE id = $1',
+            [ticketId]
+        );
+
+        if (ticketResult.rows.length > 0) {
+            const { match_id, quantity, status } = ticketResult.rows[0];
+
+            // Restore seats if ticket was holding them (PENDING, PAID)
+            // Failed/Rejected/Cancelled usually release seats immediately, 
+            // but if we are deleting from DB, let's just be sure we aren't creating ghosts.
+            // Assumption: FAILED/REJECTED status generally should have already released seats, 
+            // but if manual deletion is happening, we assume the seats are currently held unless status explicitly says otherwise that we trust.
+            // Safest logic: If status was PENDING or PAID, definitely restore.
+
+            if (['PENDING', 'PAID'].includes(status)) {
+                await db.query(`
+                    UPDATE matches SET available_seats = available_seats + $1 WHERE id = $2
+                `, [quantity, match_id]);
+            }
+        }
+
+        // Delete ticket (Cascades to payments due to schema)
+        await db.query('DELETE FROM tickets WHERE id = $1', [ticketId]);
+
+        console.log(`🗑️ Ticket deleted: ${ticketId}`);
+        res.redirect('/admin/tickets?success=Ticket deleted successfully');
+    } catch (error) {
+        console.error('❌ Delete ticket error:', error);
+        res.redirect('/admin/tickets?error=Failed to delete ticket');
+    }
+});
+
 // ============================================
 // STAFF MANAGEMENT
 // ============================================
