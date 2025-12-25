@@ -62,11 +62,11 @@
                             <tbody>
                                 <% recentTickets.forEach(function(t) { %>
                                     <tr>
-                                        <td><code><%= t.qr_code %></code></td>
-                                        <td>
+                                        <td data-label="Code"><code><%= t.qr_code %></code></td>
+                                        <td data-label="Match">
                                             <%= t.team_home %> vs <%= t.team_away %>
                                         </td>
-                                        <td>Rs. <%= Number(t.total_amount).toLocaleString() %>
+                                        <td data-label="Amount">Rs. <%= Number(t.total_amount).toLocaleString() %>
                                         </td>
                                     </tr>
                                     <% }); %>
@@ -94,13 +94,13 @@
                             <tbody>
                                 <% upcomingMatches.forEach(function(m) { %>
                                     <tr>
-                                        <td>
+                                        <td data-label="Match">
                                             <%= m.team_home %> vs <%= m.team_away %>
                                         </td>
-                                        <td>
+                                        <td data-label="Date">
                                             <%= new Date(m.match_date).toLocaleDateString() %>
                                         </td>
-                                        <td>
+                                        <td data-label="Sold">
                                             <%= m.tickets_sold || 0 %>
                                         </td>
                                     </tr>
