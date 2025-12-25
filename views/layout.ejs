@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GoalKick Lite - Buy football match tickets in Nepal with eSewa payment">
+    <meta name="theme-color" content="#1a1a2e">
+    <title><%= title %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <a href="/" class="logo">
+                <span class="logo-icon">⚽</span>
+                <span class="logo-text">GoalKick <span class="logo-lite">Lite</span></span>
+            </a>
+            <nav class="nav">
+                <a href="/" class="nav-link">Matches</a>
+                <a href="/gatekeeper" class="nav-link nav-gatekeeper">🔐 Gatekeeper</a>
+            </nav>
+        </header>
+        
+        <main class="main-content">
+            <%- body %>
+        </main>
+        
+        <footer class="footer">
+            <p>© 2025 GoalKick Lite. Built for Nepal 🇳🇵</p>
+        </footer>
+    </div>
+</body>
+</html>

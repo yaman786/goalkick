@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Find your GoalKick ticket using eSewa transaction ID">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        .lookup-section {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .lookup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .lookup-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .lookup-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .lookup-subtitle {
+            color: var(--color-text-muted);
+        }
+
+        .lookup-form {
+            background: var(--color-bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+        }
+
+        .esewa-input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .esewa-input-wrapper input {
+            flex: 1;
+        }
+
+        .esewa-input-wrapper button {
+            white-space: nowrap;
+        }
+
+        .no-tickets {
+            text-align: center;
+            padding: 2rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            color: var(--color-text-muted);
+        }
+
+        .no-tickets-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Ticket Card */
+        .ticket-card {
+            background: linear-gradient(145deg, #1e1e35, #252545);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ticket-header {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            padding: 1.25rem;
+            text-align: center;
+            color: white;
+        }
+
+        .ticket-header.pending {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .ticket-match {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .ticket-venue {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .ticket-body {
+            padding: 1.5rem;
+        }
+
+        .ticket-qr {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .ticket-qr img {
+            max-width: 200px;
+            width: 100%;
+        }
+
+        .ticket-qr-code {
+            font-family: monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #333;
+            margin-top: 0.5rem;
+        }
+
+        .ticket-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .ticket-detail {
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .ticket-detail-label {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .ticket-detail-value {
+            font-weight: 600;
+        }
+
+        .ticket-status {
+            text-align: center;
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .status-approved {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .status-used {
+            background: rgba(148, 163, 184, 0.2);
+            color: #94a3b8;
+        }
+
+        .download-section {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .pending-message {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .pending-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="header">
+            <a href="/" class="logo">
+                <span class="logo-icon">⚽</span>
+                <span class="logo-text">GoalKick <span class="logo-lite">Lite</span></span>
+            </a>
+            <nav class="nav">
+                <a href="/" class="nav-link">Matches</a>
+                <a href="/find-ticket" class="nav-link active">Find Ticket</a>
+                <a href="/gatekeeper" class="nav-link nav-gatekeeper">🔐 Gatekeeper</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <section class="lookup-section">
+                <div class="lookup-header">
+                    <div class="lookup-icon">🎟️</div>
+                    <h1 class="lookup-title">Find Your Ticket</h1>
+                    <p class="lookup-subtitle">Enter your eSewa Transaction ID</p>
+                </div>
+
+                <% if (error) { %>
+                    <div class="alert-error">
+                        <%= error %>
+                    </div>
+                    <% } %>
+
+                        <form action="/find-ticket" method="POST" class="lookup-form">
+                            <div class="form-group">
+                                <label for="esewa_ref">eSewa Transaction ID</label>
+                                <div class="esewa-input-wrapper">
+                                    <input type="text" id="esewa_ref" name="esewa_ref" required
+                                        placeholder="Enter transaction ID from eSewa" value="<%= esewaRef %>"
+                                        autocomplete="off">
+                                    <button type="submit" class="btn btn-primary">Find</button>
+                                </div>
+                                <small style="color: var(--color-text-muted); display: block; margin-top: 0.5rem;">
+                                    Find this in your eSewa app → Transaction History
+                                </small>
+                            </div>
+                        </form>
+
+                        <% if (searched && !ticket) { %>
+                            <div class="no-tickets">
+                                <div class="no-tickets-icon">🔍</div>
+                                <p>No ticket found for this transaction ID</p>
+                                <p style="font-size: 0.875rem; margin-top: 0.5rem;">
+                                    Double-check the ID in your eSewa app
+                                </p>
+                            </div>
+                            <% } %>
+
+                                <% if (ticket) { %>
+                                    <% if (ticket.status==='PENDING' ) { %>
+                                        <div class="pending-message">
+                                            <div class="pending-icon">⏳</div>
+                                            <h3 style="margin-bottom: 0.5rem;">Payment Being Verified</h3>
+                                            <p style="color: var(--color-text-muted); font-size: 0.875rem;">
+                                                We're verifying your payment. This usually takes 5-30 minutes.<br>
+                                                Your ticket QR code will appear here once approved.
+                                            </p>
+                                        </div>
+                                        <% } %>
+
+                                            <div class="ticket-card" id="ticketCard">
+                                                <div
+                                                    class="ticket-header <%= ticket.status === 'PENDING' ? 'pending' : '' %>">
+                                                    <div class="ticket-match">
+                                                        <%= ticket.team_home %> vs <%= ticket.team_away %>
+                                                    </div>
+                                                    <div class="ticket-venue">📍 <%= ticket.venue %>
+                                                    </div>
+                                                </div>
+
+                                                <div class="ticket-body">
+                                                    <% if (ticket.status==='PAID' && ticket.qr_code) { %>
+                                                        <div class="ticket-qr">
+                                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=<%= encodeURIComponent(ticket.qr_code) %>"
+                                                                alt="Ticket QR Code" id="qrImage">
+                                                            <div class="ticket-qr-code">
+                                                                <%= ticket.qr_code %>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+
+                                                            <div class="ticket-details">
+                                                                <div class="ticket-detail">
+                                                                    <div class="ticket-detail-label">📅 Date & Time
+                                                                    </div>
+                                                                    <div class="ticket-detail-value">
+                                                                        <%= new
+                                                                            Date(ticket.match_date).toLocaleDateString('en-NP',
+                                                                            { month: 'short' , day: 'numeric' ,
+                                                                            hour: '2-digit' , minute: '2-digit' }) %>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ticket-detail">
+                                                                    <div class="ticket-detail-label">🎟️ Quantity</div>
+                                                                    <div class="ticket-detail-value">
+                                                                        <%= ticket.quantity %> ticket(s)
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ticket-detail">
+                                                                    <div class="ticket-detail-label">💰 Amount Paid
+                                                                    </div>
+                                                                    <div class="ticket-detail-value">Rs. <%=
+                                                                            Number(ticket.total_amount).toLocaleString()
+                                                                            %>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ticket-detail">
+                                                                    <div class="ticket-detail-label">👤 Name</div>
+                                                                    <div class="ticket-detail-value">
+                                                                        <%= ticket.user_name || 'Guest' %>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                </div>
+
+                                                <div class="ticket-status">
+                                                    <% if (ticket.used_at) { %>
+                                                        <span class="status-badge status-used">✓ Used on <%= new
+                                                                Date(ticket.used_at).toLocaleDateString() %></span>
+                                                        <% } else if (ticket.status==='PAID' ) { %>
+                                                            <span class="status-badge status-approved">✓ Valid - Show at
+                                                                Gate</span>
+                                                            <% } else { %>
+                                                                <span class="status-badge status-pending">⏳ Awaiting
+                                                                    Verification</span>
+                                                                <% } %>
+                                                </div>
+                                            </div>
+
+                                            <% if (ticket.status==='PAID' && ticket.qr_code && !ticket.used_at) { %>
+                                                <div class="download-section">
+                                                    <button onclick="downloadTicket()"
+                                                        class="btn btn-primary btn-block">
+                                                        📥 Download Ticket
+                                                    </button>
+                                                </div>
+                                                <% } %>
+                                                    <% } %>
+
+                                                        <div style="text-align: center; margin-top: 2rem;">
+                                                            <a href="/" class="btn btn-outline">← Back to Matches</a>
+                                                        </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 GoalKick Lite. Built for Nepal 🇳🇵</p>
+        </footer>
+    </div>
+
+    <script>
+        async function downloadTicket() {
+            const ticketCard = document.getElementById('ticketCard');
+            if (!ticketCard) return;
+
+            try {
+                // Show loading
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '⏳ Generating...';
+                btn.disabled = true;
+
+                // Wait for QR image to load
+                const qrImg = document.getElementById('qrImage');
+                if (qrImg && !qrImg.complete) {
+                    await new Promise(resolve => {
+                        qrImg.onload = resolve;
+                        setTimeout(resolve, 2000); // Timeout fallback
+                    });
+                }
+
+                // Generate canvas
+                const canvas = await html2canvas(ticketCard, {
+                    backgroundColor: '#1a1a2e',
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true
+                });
+
+                // Download as PNG
+                const link = document.createElement('a');
+                link.download = 'goalkick-ticket.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('Could not download ticket. Please take a screenshot instead.');
+            }
+        }
+    </script>
+</body>
+
+</html>

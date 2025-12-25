@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .submitted-page {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            padding: 2rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .submitted-card {
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .submitted-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .submitted-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 0.5rem;
+        }
+
+        .submitted-subtitle {
+            color: #a0a0b0;
+            margin-bottom: 2rem;
+        }
+
+        .status-card {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #a0a0b0;
+            font-size: 0.875rem;
+        }
+
+        .detail-value {
+            font-weight: 600;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 0.875rem;
+            color: #60a5fa;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline {
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .timeline-dot.done {
+            background: #22c55e;
+        }
+
+        .timeline-dot.pending {
+            background: #f59e0b;
+            animation: blink 1.5s infinite;
+        }
+
+        .timeline-dot.upcoming {
+            background: #475569;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .timeline-text {
+            font-size: 0.875rem;
+        }
+
+        .timeline-text.muted {
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="submitted-page">
+        <div class="submitted-card">
+            <div class="submitted-icon">⏳</div>
+            <h1 class="submitted-title">Payment Submitted!</h1>
+            <p class="submitted-subtitle">We're verifying your payment. This usually takes 5-30 minutes.</p>
+
+            <div class="status-card">
+                <div class="status-badge">⏳ Awaiting Verification</div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Booking Code</span>
+                    <span class="detail-value">
+                        <%= ticket.qr_code %>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Match</span>
+                    <span class="detail-value">
+                        <%= ticket.team_home %> vs <%= ticket.team_away %>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">eSewa Ref</span>
+                    <span class="detail-value">
+                        <%= esewaRef %>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Amount</span>
+                    <span class="detail-value">Rs. <%= Number(ticket.total_amount).toLocaleString() %></span>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot done"></div>
+                    <div class="timeline-text">Booking created ✓</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot done"></div>
+                    <div class="timeline-text">Payment submitted ✓</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot pending"></div>
+                    <div class="timeline-text">Admin verification (in progress)</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot upcoming"></div>
+                    <div class="timeline-text muted">Ticket issued with QR code</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                📱 Once verified, you can find your ticket at:<br>
+                <strong>/find-ticket</strong> using phone number
+            </div>
+
+            <a href="/find-ticket" class="btn btn-primary btn-block">
+                Check Ticket Status
+            </a>
+
+            <div style="margin-top: 1rem;">
+                <a href="/" class="btn btn-outline btn-block">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | GoalKick</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+
+<body class="admin-body login-page">
+    <div class="login-card">
+        <h1 class="login-title">⚽ GoalKick Admin</h1>
+        <p class="login-subtitle">Sign in to manage your ticketing system</p>
+
+        <% if (typeof error !=='undefined' && error) { %>
+            <div class="alert alert-error">
+                <%= error %>
+            </div>
+            <% } %>
+
+                <form action="/admin/login" method="POST" class="admin-form"
+                    style="background: transparent; padding: 0; border: none;">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required autocomplete="username" autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required autocomplete="current-password">
+                    </div>
+
+                    <button type="submit" class="btn-admin btn-admin-primary" style="width: 100%; margin-top: 0.5rem;">
+                        Sign In
+                    </button>
+                </form>
+
+                <p style="text-align: center; margin-top: 1.5rem; font-size: 0.75rem; color: var(--admin-text-muted);">
+                    <a href="/" style="color: var(--admin-primary);">← Back to main site</a>
+                </p>
+    </div>
+</body>
+
+</html>

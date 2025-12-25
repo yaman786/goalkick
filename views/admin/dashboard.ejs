@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %> | GoalKick Admin
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+
+<body class="admin-body">
+    <header class="admin-header">
+        <a href="/admin" class="admin-logo">
+            <span>⚽ GoalKick</span>
+            <span>Admin</span>
+        </a>
+
+        <nav class="admin-nav">
+            <a href="/admin" class="admin-nav-link active">📊 Dashboard</a>
+            <a href="/admin/matches" class="admin-nav-link">🏟️ Matches</a>
+            <a href="/admin/tickets" class="admin-nav-link">🎟️ Tickets</a>
+            <a href="/" class="admin-nav-link" target="_blank">🌐 View Site</a>
+        </nav>
+
+        <div class="admin-user">
+            <% if (typeof admin !=='undefined' && admin) { %>
+                👤 <%= admin.name || admin.username %>
+                    <a href="/admin/logout" class="btn-admin btn-admin-secondary btn-admin-sm">Logout</a>
+                    <% } %>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <div class="page-header">
+            <h1 class="page-title">📊 Dashboard</h1>
+            <span style="color: var(--admin-text-muted);">Welcome back,
+                <% if (typeof admin !=='undefined' && admin) { %>
+                    <%= admin.name || admin.username %>
+                        <% } else { %>
+                            Admin
+                            <% } %>
+            </span>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card primary">
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-value">Rs. <%= Number(stats.total_revenue || 0).toLocaleString() %>
+                </div>
+                <div class="stat-sub">Today: Rs. <%= Number(stats.today_revenue || 0).toLocaleString() %>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Tickets Sold</div>
+                <div class="stat-value">
+                    <%= stats.tickets_sold || 0 %>
+                </div>
+                <div class="stat-sub">Today: <%= stats.today_tickets || 0 %>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Matches</div>
+                <div class="stat-value">
+                    <%= stats.active_matches || 0 %>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value">
+                    <%= stats.total_users || 0 %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Columns -->
+        <div class="dashboard-grid">
+            <!-- Recent Tickets -->
+            <div class="admin-section">
+                <h2 class="section-title">🎟️ Recent Tickets</h2>
+                <% if (recentTickets.length===0) { %>
+                    <p style="color: var(--admin-text-muted);">No recent tickets</p>
+                    <% } else { %>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Match</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% recentTickets.forEach(function(t) { %>
+                                        <tr>
+                                            <td><code><%= t.qr_code %></code></td>
+                                            <td>
+                                                <%= t.team_home %> vs <%= t.team_away %>
+                                            </td>
+                                            <td>Rs. <%= Number(t.total_amount).toLocaleString() %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <% } %>
+            </div>
+
+            <!-- Upcoming Matches -->
+            <div class="admin-section">
+                <h2 class="section-title">🏟️ Upcoming Matches</h2>
+                <% if (upcomingMatches.length===0) { %>
+                    <p style="color: var(--admin-text-muted);">No upcoming matches</p>
+                    <% } else { %>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Match</th>
+                                        <th>Date</th>
+                                        <th>Sold</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% upcomingMatches.forEach(function(m) { %>
+                                        <tr>
+                                            <td>
+                                                <%= m.team_home %> vs <%= m.team_away %>
+                                            </td>
+                                            <td>
+                                                <%= new Date(m.match_date).toLocaleDateString() %>
+                                            </td>
+                                            <td>
+                                                <%= m.tickets_sold || 0 %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <% } %>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

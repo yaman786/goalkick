@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .error-container {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .error-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .error-code {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #ef4444;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            color: #a0a0b0;
+            max-width: 400px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="header">
+            <a href="/" class="logo">
+                <span class="logo-icon">⚽</span>
+                <span class="logo-text">GoalKick <span class="logo-lite">Lite</span></span>
+            </a>
+        </header>
+
+        <main class="main-content">
+            <div class="error-container">
+                <div class="error-icon">
+                    <% if (typeof errorCode !=='undefined' && errorCode===402) { %>
+                        💳
+                        <% } else if (typeof errorCode !=='undefined' && errorCode===404) { %>
+                            🔍
+                            <% } else { %>
+                                ⚠️
+                                <% } %>
+                </div>
+
+                <% if (typeof errorCode !=='undefined' ) { %>
+                    <div class="error-code">
+                        <%= errorCode %>
+                    </div>
+                    <% } %>
+
+                        <h1 class="error-title">
+                            <%= title %>
+                        </h1>
+                        <p class="error-message">
+                            <%= message %>
+                        </p>
+
+                        <div class="error-actions">
+                            <a href="/" class="btn btn-primary">🏠 Go Home</a>
+                            <% if (typeof showRetry !=='undefined' && showRetry) { %>
+                                <a href="/" class="btn btn-outline">Try Again</a>
+                                <% } %>
+                        </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 GoalKick Lite. Built for Nepal 🇳🇵</p>
+        </footer>
+    </div>
+</body>
+
+</html>

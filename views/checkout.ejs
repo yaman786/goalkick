@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="header">
+            <a href="/" class="logo">
+                <span class="logo-icon">⚽</span>
+                <span class="logo-text">GoalKick <span class="logo-lite">Lite</span></span>
+            </a>
+            <nav class="nav">
+                <a href="/" class="nav-link">Matches</a>
+                <a href="/gatekeeper" class="nav-link nav-gatekeeper">🔐 Gatekeeper</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <section class="checkout-section">
+                <h1 class="checkout-title">🎟️ Purchase Tickets</h1>
+
+                <div class="checkout-container">
+                    <div class="match-summary">
+                        <div class="match-teams-checkout">
+                            <span class="team">
+                                <%= match.team_home %>
+                            </span>
+                            <span class="vs">VS</span>
+                            <span class="team">
+                                <%= match.team_away %>
+                            </span>
+                        </div>
+
+                        <div class="match-details">
+                            <div class="detail-item">
+                                <span class="detail-icon">📅</span>
+                                <span>
+                                    <%= formatDate(match.match_date) %>
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-icon">📍</span>
+                                <span>
+                                    <%= match.venue %>
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-icon">💺</span>
+                                <span>
+                                    <%= match.available_seats %> seats available
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="price-display">
+                            <span class="price-label">Price per ticket</span>
+                            <span class="price-amount">
+                                <%= formatPrice(match.price) %>
+                            </span>
+                        </div>
+                    </div>
+
+                    <form action="/buy_ticket" method="POST" class="checkout-form">
+                        <input type="hidden" name="match_id" value="<%= match.id %>">
+
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" required placeholder="Enter your full name"
+                                autocomplete="name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" required placeholder="98XXXXXXXX"
+                                pattern="[0-9]{10}" inputmode="numeric" autocomplete="tel">
+                            <span class="form-hint">10 digit mobile number</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantity">Number of Tickets *</label>
+                            <select id="quantity" name="quantity" required onchange="updateTotal()">
+                                <% for(let i=1; i <=Math.min(10, match.available_seats); i++) { %>
+                                    <option value="<%= i %>">
+                                        <%= i %> ticket<%= i> 1 ? 's' : '' %>
+                                    </option>
+                                    <% } %>
+                            </select>
+                        </div>
+
+                        <div class="order-summary">
+                            <div class="summary-row">
+                                <span>Tickets</span>
+                                <span id="ticketCount">1</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Price per ticket</span>
+                                <span>
+                                    <%= formatPrice(match.price) %>
+                                </span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total Amount</span>
+                                <span id="totalAmount">
+                                    <%= formatPrice(match.price) %>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Sticky footer on mobile -->
+                        <div class="checkout-sticky-footer">
+                            <button type="submit" class="btn btn-esewa btn-block">
+                                <img src="https://esewa.com.np/common/images/esewa_logo.png" alt="eSewa"
+                                    class="esewa-logo" onerror="this.style.display='none'">
+                                Pay with eSewa
+                            </button>
+                        </div>
+
+                        <p class="checkout-note">
+                            You will be redirected to eSewa for secure payment
+                        </p>
+                    </form>
+                </div>
+
+                <a href="/" class="back-link">← Back to matches</a>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 GoalKick Lite. Built for Nepal 🇳🇵</p>
+        </footer>
+    </div>
+
+    <script>
+        const ticketPrice = <%= match.price %>;
+
+        function updateTotal() {
+            const quantity = document.getElementById('quantity').value;
+            const total = ticketPrice * quantity;
+            document.getElementById('ticketCount').textContent = quantity;
+            document.getElementById('totalAmount').textContent = 'Rs. ' + total.toLocaleString('en-NP');
+        }
+    </script>
+</body>
+
+</html>

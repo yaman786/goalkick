@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="GoalKick Lite - Buy football match tickets in Nepal with eSewa payment">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="header">
+            <a href="/" class="logo">
+                <span class="logo-icon">⚽</span>
+                <span class="logo-text">GoalKick <span class="logo-lite">Lite</span></span>
+            </a>
+            <nav class="nav">
+                <a href="/" class="nav-link active">Matches</a>
+                <a href="/find-ticket" class="nav-link">Find Ticket</a>
+                <a href="/gatekeeper" class="nav-link nav-gatekeeper">🔐 Gatekeeper</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <style>
+                .success-banner {
+                    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 163, 74, 0.2));
+                    border: 1px solid rgba(34, 197, 94, 0.4);
+                    border-radius: 12px;
+                    padding: 1.5rem;
+                    margin-bottom: 1.5rem;
+                    text-align: center;
+                }
+
+                .success-banner-icon {
+                    font-size: 2.5rem;
+                    margin-bottom: 0.75rem;
+                }
+
+                .success-banner-title {
+                    font-size: 1.25rem;
+                    font-weight: 700;
+                    color: #4ade80;
+                    margin-bottom: 0.5rem;
+                }
+
+                .success-banner-text {
+                    color: #a0a0b0;
+                    font-size: 0.9rem;
+                    line-height: 1.6;
+                }
+
+                .success-banner-ref {
+                    font-family: monospace;
+                    background: rgba(255, 255, 255, 0.1);
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    display: inline-block;
+                    margin: 0.75rem 0;
+                    font-weight: 600;
+                }
+            </style>
+
+            <script>
+                // Show success banner if payment=success in URL
+                document.addEventListener('DOMContentLoaded', function () {
+                    const params = new URLSearchParams(window.location.search);
+                    if (params.get('payment') === 'success') {
+                        const ref = params.get('ref') || '';
+                        const banner = document.getElementById('successBanner');
+                        if (banner) {
+                            banner.style.display = 'block';
+                            const refSpan = document.getElementById('esewaRefDisplay');
+                            if (refSpan && ref) refSpan.textContent = ref;
+                        }
+                        // Clean URL
+                        window.history.replaceState({}, document.title, '/');
+                    }
+                });
+            </script>
+
+            <div id="successBanner" class="success-banner" style="display: none;">
+                <div class="success-banner-icon">✅</div>
+                <div class="success-banner-title">Payment Submitted Successfully!</div>
+                <div class="success-banner-text">
+                    Your eSewa Transaction ID:<br>
+                    <span class="success-banner-ref" id="esewaRefDisplay">—</span><br>
+                    We're verifying your payment. Usually takes 5-30 minutes.<br>
+                    <strong>Use "Find Ticket" anytime to check your ticket status.</strong>
+                </div>
+                <a href="/find-ticket" class="btn btn-primary" style="margin-top: 1rem;">Find My Ticket</a>
+            </div>
+
+            <section class="hero">
+                <h1>🏆 Nepal Football Tickets</h1>
+                <p class="hero-subtitle">Book your match tickets instantly with eSewa payment</p>
+            </section>
+
+            <section class="matches-section">
+                <h2 class="section-title">Upcoming Matches</h2>
+
+                <% if (matches.length===0) { %>
+                    <div class="empty-state">
+                        <span class="empty-icon">📅</span>
+                        <h3>No upcoming matches</h3>
+                        <p>Check back later for new match announcements!</p>
+                    </div>
+                    <% } else { %>
+                        <div class="matches-grid">
+                            <% matches.forEach(match=> { %>
+                                <div class="match-card">
+                                    <div class="match-date-badge">
+                                        <%= formatDate(match.match_date) %>
+                                    </div>
+
+                                    <div class="match-teams">
+                                        <span class="team home">
+                                            <%= match.team_home %>
+                                        </span>
+                                        <span class="vs">VS</span>
+                                        <span class="team away">
+                                            <%= match.team_away %>
+                                        </span>
+                                    </div>
+
+                                    <div class="match-venue">
+                                        <span class="venue-icon">📍</span>
+                                        <%= match.venue %>
+                                    </div>
+
+                                    <div class="match-info">
+                                        <div class="info-item">
+                                            <span class="info-label">Price</span>
+                                            <span class="info-value price">
+                                                <%= formatPrice(match.price) %>
+                                            </span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Available</span>
+                                            <span
+                                                class="info-value seats <%= match.available_seats < 50 ? 'low' : '' %>">
+                                                <%= match.available_seats %> / <%= match.total_seats %>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <% if (match.available_seats> 0) { %>
+                                        <a href="/match/<%= match.id %>" class="btn btn-primary btn-block">
+                                            🎟️ Buy Tickets
+                                        </a>
+                                        <% } else { %>
+                                            <button class="btn btn-disabled btn-block" disabled>
+                                                Sold Out
+                                            </button>
+                                            <% } %>
+                                </div>
+                                <% }) %>
+                        </div>
+                        <% } %>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 GoalKick Lite. Built for Nepal 🇳🇵</p>
+        </footer>
+    </div>
+</body>
+
+</html>

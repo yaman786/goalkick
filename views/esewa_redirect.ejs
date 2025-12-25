@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .redirect-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(96, 187, 70, 0.2);
+            border-top-color: #60bb46;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .redirect-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .redirect-text {
+            color: #a0a0b0;
+            margin-bottom: 2rem;
+        }
+
+        .esewa-badge {
+            background: linear-gradient(135deg, #60bb46, #4a9d3a);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .esewa-badge img {
+            height: 30px;
+        }
+
+        .order-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            min-width: 300px;
+        }
+
+        .order-info h3 {
+            color: #60bb46;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .order-row:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: #60bb46;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <main class="main-content">
+            <div class="redirect-container">
+                <div class="loading-spinner"></div>
+
+                <h1 class="redirect-title">Redirecting to eSewa</h1>
+                <p class="redirect-text">Please wait while we connect you to eSewa payment gateway...</p>
+
+                <div class="esewa-badge">
+                    <img src="https://esewa.com.np/common/images/esewa_logo.png" alt="eSewa"
+                        onerror="this.parentElement.innerHTML='eSewa Payment'">
+                    <span style="color: white; font-weight: 600;">Secure Payment</span>
+                </div>
+
+                <div class="order-info">
+                    <h3>Order Summary</h3>
+                    <div class="order-row">
+                        <span>Match</span>
+                        <span>
+                            <%= match.team_home %> vs <%= match.team_away %>
+                        </span>
+                    </div>
+                    <div class="order-row">
+                        <span>Tickets</span>
+                        <span>
+                            <%= quantity %>
+                        </span>
+                    </div>
+                    <div class="order-row">
+                        <span>Total</span>
+                        <span>Rs. <%= totalAmount.toLocaleString() %></span>
+                    </div>
+                </div>
+
+                <!-- Hidden form that auto-submits to eSewa -->
+                <form id="esewaForm" action="<%= paymentUrl %>" method="POST" style="display: none;">
+                    <input type="hidden" name="amt" value="<%= formData.amt %>">
+                    <input type="hidden" name="psc" value="<%= formData.psc %>">
+                    <input type="hidden" name="pdc" value="<%= formData.pdc %>">
+                    <input type="hidden" name="txAmt" value="<%= formData.txAmt %>">
+                    <input type="hidden" name="tAmt" value="<%= formData.tAmt %>">
+                    <input type="hidden" name="pid" value="<%= formData.pid %>">
+                    <input type="hidden" name="scd" value="<%= formData.scd %>">
+                    <input type="hidden" name="su" value="<%= formData.su %>">
+                    <input type="hidden" name="fu" value="<%= formData.fu %>">
+                </form>
+
+                <noscript>
+                    <p style="color: #ef4444; margin-top: 2rem;">
+                        JavaScript is required. Please enable JavaScript or
+                        <button onclick="document.getElementById('esewaForm').submit()">click here</button>
+                        to continue to eSewa.
+                    </p>
+                </noscript>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Auto-submit form after a short delay for UX
+        setTimeout(function () {
+            document.getElementById('esewaForm').submit();
+        }, 1500);
+    </script>
+</body>
+
+</html>
