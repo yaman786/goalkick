@@ -11,9 +11,61 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/admin.css">
+
+    <!-- Socket.io & Notifications -->
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        /* Toast Notification */
+        .admin-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.95);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .admin-toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-content h4 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .toast-content p {
+            margin: 0.2rem 0 0;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+    </style>
 </head>
 
 <body class="admin-body">
+
+    <!-- Notification Container -->
+    <div id="toast-container"></div>
+    <!-- Sound Element -->
+    <audio id="notification-sound" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"
+        preload="auto"></audio>
+
     <header class="admin-header">
         <a href="/admin" class="admin-logo">
             <span>⚽ GoalKick</span>
@@ -43,12 +95,77 @@
         </nav>
 
         <div class="admin-user">
+            <button id="toggle-sound" class="btn-admin btn-admin-sm"
+                style="background: rgba(255,255,255,0.1); margin-right: 0.5rem;" title="Enable Sound">
+                🔇
+            </button>
             <% if (typeof admin !=='undefined' && admin) { %>
                 👤 <%= admin.name || admin.username %>
                     <a href="/admin/logout" class="btn-admin btn-admin-secondary btn-admin-sm">Logout</a>
                     <% } %>
         </div>
     </header>
+
+    <script>
+        // --- Real-time Notifications Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const socket = io();
+            const sound = document.getElementById('notification-sound');
+            const toggleBtn = document.getElementById('toggle-sound');
+            let soundEnabled = false;
+
+            // Join admin room
+            socket.emit('join_admin');
+
+            // Sound Toggle Logic
+            toggleBtn.addEventListener('click', () => {
+                soundEnabled = !soundEnabled;
+                if (soundEnabled) {
+                    toggleBtn.textContent = '🔊';
+                    toggleBtn.style.background = 'rgba(16, 185, 129, 0.2)';
+                    toggleBtn.style.color = '#10b981';
+                    // Play mute to unlock audio context
+                    sound.muted = true;
+                    sound.play().then(() => { sound.muted = false; }).catch(e => console.error(e));
+                } else {
+                    toggleBtn.textContent = '🔇';
+                    toggleBtn.style.background = 'rgba(255,255,255,0.1)';
+                    toggleBtn.style.color = 'inherit';
+                }
+            });
+
+            // Listen for sales
+            socket.on('ticket_sold', (data) => {
+                showToast(data);
+                if (soundEnabled) {
+                    sound.currentTime = 0;
+                    sound.play().catch(e => console.log('Audio blocked:', e));
+                }
+            });
+
+            function showToast(data) {
+                const toast = document.createElement('div');
+                toast.className = 'admin-toast';
+                toast.innerHTML = `
+                    <div class="toast-icon">🎟️</div>
+                    <div class="toast-content">
+                        <h4>New Ticket Sold!</h4>
+                        <p>Rs. ${Number(data.amount).toLocaleString()} • ${data.count} seat(s)</p>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+
+                // Animate in
+                requestAnimationFrame(() => toast.classList.add('show'));
+
+                // Remove after 4s
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+        });
+    </script>
 
     <main class="admin-container">
         <% if (typeof success !=='undefined' && success) { %>

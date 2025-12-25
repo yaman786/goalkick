@@ -148,6 +148,25 @@ router.get('/payment_success', async (req, res) => {
 
         console.log(`✅ Payment verified and ticket generated: ${qrResult.code}`);
 
+        // ============================================
+        // REAL-TIME NOTIFICATION (SOCKET.IO)
+        // ============================================
+        try {
+            const io = req.app.get('io');
+            if (io) {
+                io.to('admin_notifications').emit('ticket_sold', {
+                    amount: amount,
+                    count: ticket.quantity,
+                    match: `${ticket.team_home} vs ${ticket.team_away}`,
+                    timestamp: new Date()
+                });
+                console.log('📡 Emitted ticket_sold event');
+            }
+        } catch (socketError) {
+            console.error('⚠️ Socket emission failed:', socketError);
+            // Non-blocking error
+        }
+
         // Render success page with ticket
         res.render('ticket', {
             title: 'Ticket Confirmed!',

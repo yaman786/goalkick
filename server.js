@@ -18,6 +18,12 @@ const adminRoutes = require('./routes/admin');
 
 // Initialize Express app
 const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+
+// Make io available to all routes
+app.set('io', io);
+
 const PORT = process.env.PORT || 3000;
 
 // ============================================
@@ -59,6 +65,21 @@ app.use((req, res, next) => {
     const timestamp = new Date().toISOString();
     console.log(`[${timestamp}] ${req.method} ${req.path}`);
     next();
+});
+
+// Socket.io Connection Handler
+io.on('connection', (socket) => {
+    console.log('🔌 Client connected to socket');
+
+    // Join admin room if authenticated (simple check for now, can be hardened later)
+    socket.on('join_admin', () => {
+        socket.join('admin_notifications');
+        console.log('🔔 Client joined admin notifications channel');
+    });
+
+    socket.on('disconnect', () => {
+        console.log('❌ Client disconnected');
+    });
 });
 
 // ============================================
@@ -107,7 +128,7 @@ app.use((err, req, res, next) => {
 // SERVER STARTUP
 // ============================================
 
-app.listen(PORT, () => {
+http.listen(PORT, () => {
     console.log(`
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
