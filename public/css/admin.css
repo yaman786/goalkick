@@ -454,21 +454,42 @@
 .admin-nav {
     order: 3;
     width: 100%;
-    justify-content: space-between;
-    gap: 0.25rem;
+    margin-top: 0.5rem;
     padding-top: 0.5rem;
     border-top: 1px solid var(--admin-surface-light);
+
+    /* Horizontal Scroll Logic */
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    padding-bottom: 0.5rem;
+    /* Space for scrollbar if visible */
+}
+
+/* Hide scrollbar for cleaner look but keep functionality */
+.admin-nav::-webkit-scrollbar {
+    display: none;
 }
 
 .admin-nav-link {
-    flex: 1;
-    text-align: center;
-    padding: 0.75rem 0.5rem;
-    font-size: 0.75rem;
-    min-height: 44px;
-    display: flex;
+    flex: 0 0 auto;
+    /* Don't shrink */
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 99px;
+    /* Pill shape */
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+}
+
+.admin-nav-link.active {
+    background: var(--admin-primary);
+    color: white;
 }
 
 .admin-user {
@@ -507,19 +528,58 @@
 }
 
 /* Mobile Tables - Card Style */
-.admin-table-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+/* Mobile Tables - Card Style transformation */
+.admin-table thead {
+    display: none;
 }
 
-.admin-table {
-    min-width: 100%;
-}
-
-.admin-table th,
+.admin-table,
+.admin-table tbody,
+.admin-table tr,
 .admin-table td {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.8rem;
+    display: block;
+    width: 100%;
+}
+
+.admin-table tr {
+    background: var(--admin-surface);
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--admin-surface-light);
+    padding: 1rem;
+}
+
+.admin-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.admin-table td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-top: 0.5rem;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.admin-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--admin-text-muted);
+    text-align: left;
+}
+
+/* Remove wrapper overflow since we are now stacking */
+.admin-table-wrapper {
+    background: transparent;
+    border: none;
+    overflow: visible;
 }
 
 /* Mobile Buttons */

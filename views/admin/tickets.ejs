@@ -57,25 +57,25 @@
                     <% } else { %>
                         <% tickets.forEach(function(t) { %>
                             <tr>
-                                <td>
+                                <td data-label="eSewa Ref">
                                     <code
                                         style="color: #f59e0b; font-size: 0.75rem;"><%= t.esewa_transaction_id || '—' %></code>
                                 </td>
-                                <td>
+                                <td data-label="Match">
                                     <%= t.team_home %> vs <%= t.team_away %>
                                 </td>
-                                <td>
+                                <td data-label="Customer">
                                     <%= t.user_name || 'Guest' %><br>
                                         <small style="color: var(--admin-text-muted);">
                                             <%= t.user_phone || '' %>
                                         </small>
                                 </td>
-                                <td>
+                                <td data-label="Qty">
                                     <%= t.quantity %>
                                 </td>
-                                <td>Rs. <%= Number(t.total_amount).toLocaleString() %>
+                                <td data-label="Amount">Rs. <%= Number(t.total_amount).toLocaleString() %>
                                 </td>
-                                <td>
+                                <td data-label="Status">
                                     <% if (t.status==='PAID' ) { %>
                                         <span class="badge badge-success">Paid</span>
                                         <% } else if (t.status==='PENDING' ) { %>
@@ -86,35 +86,37 @@
                                                 </span>
                                                 <% } %>
                                 </td>
-                                <td>
+                                <td data-label="Used">
                                     <% if (t.used_at) { %>
                                         <span class="badge badge-info">Used</span>
                                         <% } else { %>
                                             —
                                             <% } %>
                                 </td>
-                                <td>
-                                    <% if (t.status==='PENDING' ) { %>
-                                        <form action="/admin/tickets/<%= t.id %>/approve" method="POST"
-                                            style="display: inline; margin-right: 0.25rem;">
-                                            <button type="submit" class="btn-admin btn-admin-sm btn-admin-primary">✓
-                                                Approve</button>
-                                        </form>
-                                        <form action="/admin/tickets/<%= t.id %>/reject" method="POST"
-                                            style="display: inline;">
-                                            <button type="submit"
-                                                class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
-                                        </form>
-                                        <% } else if (t.status==='PAID' && !t.used_at) { %>
-                                            <form action="/admin/tickets/<%= t.id %>/mark-used" method="POST"
+                                <td data-label="Actions">
+                                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end; width: 100%;">
+                                        <% if (t.status==='PENDING' ) { %>
+                                            <form action="/admin/tickets/<%= t.id %>/approve" method="POST"
+                                                style="display: inline;">
+                                                <button type="submit" class="btn-admin btn-admin-sm btn-admin-primary">✓
+                                                    Approve</button>
+                                            </form>
+                                            <form action="/admin/tickets/<%= t.id %>/reject" method="POST"
                                                 style="display: inline;">
                                                 <button type="submit"
-                                                    class="btn-admin btn-admin-sm btn-admin-secondary">Mark
-                                                    Used</button>
+                                                    class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
                                             </form>
-                                            <% } else { %>
-                                                —
-                                                <% } %>
+                                            <% } else if (t.status==='PAID' && !t.used_at) { %>
+                                                <form action="/admin/tickets/<%= t.id %>/mark-used" method="POST"
+                                                    style="display: inline;">
+                                                    <button type="submit"
+                                                        class="btn-admin btn-admin-sm btn-admin-secondary">Mark
+                                                        Used</button>
+                                                </form>
+                                                <% } else { %>
+                                                    <span>—</span>
+                                                    <% } %>
+                                    </div>
                                 </td>
                             </tr>
                             <% }); %>
