@@ -1,112 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('header', { title: title, active: 'matches' }) %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %> | GoalKick Admin
-    </title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/admin.css">
-</head>
+    <div class="page-header">
+        <h1 class="page-title">
+            <%= isEdit ? '✏️ Edit Match' : '➕ Create Match' %>
+        </h1>
+        <a href="/admin/matches" class="btn-admin btn-admin-secondary">← Back to Matches</a>
+    </div>
 
-<body class="admin-body">
-    <header class="admin-header">
-        <a href="/admin" class="admin-logo">
-            <span>⚽ GoalKick</span>
-            <span>Admin</span>
-        </a>
-
-        <nav class="admin-nav">
-            <a href="/admin" class="admin-nav-link">📊 Dashboard</a>
-            <a href="/admin/matches" class="admin-nav-link active">🏟️ Matches</a>
-            <a href="/admin/tickets" class="admin-nav-link">🎟️ Tickets</a>
-            <a href="/" class="admin-nav-link" target="_blank">🌐 View Site</a>
-        </nav>
-
-        <div class="admin-user">
-            <% if (typeof admin !=='undefined' && admin) { %>
-                👤 <%= admin.name || admin.username %>
-                    <a href="/admin/logout" class="btn-admin btn-admin-secondary btn-admin-sm">Logout</a>
-                    <% } %>
+    <form action="<%= isEdit ? '/admin/matches/' + match.id : '/admin/matches' %>" method="POST" class="admin-form"
+        style="max-width: 700px;">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="team_home">Home Team *</label>
+                <input type="text" id="team_home" name="team_home" required value="<%= match ? match.team_home : '' %>"
+                    placeholder="e.g., Manang FC">
+            </div>
+            <div class="form-group">
+                <label for="team_away">Away Team *</label>
+                <input type="text" id="team_away" name="team_away" required value="<%= match ? match.team_away : '' %>"
+                    placeholder="e.g., Three Star Club">
+            </div>
         </div>
-    </header>
 
-    <main class="admin-container">
-        <% if (typeof error !=='undefined' && error) { %>
-            <div class="alert alert-error">
-                <%= error %>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="match_date">Match Date & Time *</label>
+                <input type="datetime-local" id="match_date" name="match_date" required
+                    value="<%= match ? new Date(match.match_date).toISOString().slice(0, 16) : '' %>">
+            </div>
+            <div class="form-group">
+                <label for="venue">Venue *</label>
+                <input type="text" id="venue" name="venue" required value="<%= match ? match.venue : '' %>"
+                    placeholder="e.g., Dasharath Stadium">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="price">Ticket Price (Rs.) *</label>
+                <input type="number" id="price" name="price" required min="0" step="0.01"
+                    value="<%= match ? match.price : '500' %>">
+            </div>
+            <div class="form-group">
+                <label for="total_seats">Total Seats *</label>
+                <input type="number" id="total_seats" name="total_seats" required min="1"
+                    value="<%= match ? match.total_seats : '1000' %>">
+            </div>
+        </div>
+
+        <% if (isEdit) { %>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="is_active" <%=match.is_active ? 'checked' : '' %>>
+                    Match is active (visible to public)
+                </label>
             </div>
             <% } %>
 
-                <div class="page-header">
-                    <h1 class="page-title">
-                        <%= isEdit ? '✏️ Edit Match' : '➕ Create Match' %>
-                    </h1>
-                    <a href="/admin/matches" class="btn-admin btn-admin-secondary">← Back to Matches</a>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn-admin btn-admin-primary">
+                        <%= isEdit ? 'Update Match' : 'Create Match' %>
+                    </button>
+                    <a href="/admin/matches" class="btn-admin btn-admin-secondary">Cancel</a>
                 </div>
+    </form>
 
-                <form action="<%= isEdit ? '/admin/matches/' + match.id : '/admin/matches' %>" method="POST"
-                    class="admin-form" style="max-width: 700px;">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="team_home">Home Team *</label>
-                            <input type="text" id="team_home" name="team_home" required
-                                value="<%= match ? match.team_home : '' %>" placeholder="e.g., Manang FC">
-                        </div>
-                        <div class="form-group">
-                            <label for="team_away">Away Team *</label>
-                            <input type="text" id="team_away" name="team_away" required
-                                value="<%= match ? match.team_away : '' %>" placeholder="e.g., Three Star Club">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="match_date">Match Date & Time *</label>
-                            <input type="datetime-local" id="match_date" name="match_date" required
-                                value="<%= match ? new Date(match.match_date).toISOString().slice(0, 16) : '' %>">
-                        </div>
-                        <div class="form-group">
-                            <label for="venue">Venue *</label>
-                            <input type="text" id="venue" name="venue" required value="<%= match ? match.venue : '' %>"
-                                placeholder="e.g., Dasharath Stadium">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="price">Ticket Price (Rs.) *</label>
-                            <input type="number" id="price" name="price" required min="0" step="0.01"
-                                value="<%= match ? match.price : '500' %>">
-                        </div>
-                        <div class="form-group">
-                            <label for="total_seats">Total Seats *</label>
-                            <input type="number" id="total_seats" name="total_seats" required min="1"
-                                value="<%= match ? match.total_seats : '1000' %>">
-                        </div>
-                    </div>
-
-                    <% if (isEdit) { %>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" name="is_active" <%=match.is_active ? 'checked' : '' %>>
-                                Match is active (visible to public)
-                            </label>
-                        </div>
-                        <% } %>
-
-                            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                                <button type="submit" class="btn-admin btn-admin-primary">
-                                    <%= isEdit ? 'Update Match' : 'Create Match' %>
-                                </button>
-                                <a href="/admin/matches" class="btn-admin btn-admin-secondary">Cancel</a>
-                            </div>
-                </form>
-    </main>
-</body>
-
-</html>
+    <%- include('footer') %>

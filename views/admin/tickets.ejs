@@ -1,181 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('header', { title: title, active: 'tickets' }) %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %> | GoalKick Admin
-    </title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/admin.css">
-</head>
+    <div class="page-header">
+        <h1 class="page-title">🎟️ Manage Tickets</h1>
+    </div>
 
-<body class="admin-body">
-    <header class="admin-header">
-        <a href="/admin" class="admin-logo">
-            <span>⚽ GoalKick</span>
-            <span>Admin</span>
-        </a>
-
-        <nav class="admin-nav">
-            <a href="/admin" class="admin-nav-link">📊 Dashboard</a>
-            <a href="/admin/matches" class="admin-nav-link">🏟️ Matches</a>
-            <a href="/admin/tickets" class="admin-nav-link active">🎟️ Tickets</a>
-            <a href="/" class="admin-nav-link" target="_blank">🌐 View Site</a>
-        </nav>
-
-        <div class="admin-user">
-            <% if (typeof admin !=='undefined' && admin) { %>
-                👤 <%= admin.name || admin.username %>
-                    <a href="/admin/logout" class="btn-admin btn-admin-secondary btn-admin-sm">Logout</a>
-                    <% } %>
+    <!-- Filters -->
+    <form method="GET" class="filters-bar">
+        <div class="form-group">
+            <input type="text" name="search" placeholder="Search QR, phone, name..."
+                value="<%= filters.search || '' %>">
         </div>
-    </header>
+        <div class="form-group">
+            <select name="status">
+                <option value="">All Statuses</option>
+                <option value="PAID" <%=filters.status==='PAID' ? 'selected' : '' %>>Paid</option>
+                <option value="PENDING" <%=filters.status==='PENDING' ? 'selected' : '' %>>Pending
+                </option>
+                <option value="FAILED" <%=filters.status==='FAILED' ? 'selected' : '' %>>Failed
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <select name="match_id">
+                <option value="">All Matches</option>
+                <% matches.forEach(function(m) { %>
+                    <option value="<%= m.id %>" <%=filters.match_id===m.id ? 'selected' : '' %>>
+                        <%= m.team_home %> vs <%= m.team_away %>
+                    </option>
+                    <% }); %>
+            </select>
+        </div>
+        <button type="submit" class="btn-admin btn-admin-primary btn-admin-sm">Filter</button>
+        <a href="/admin/tickets" class="btn-admin btn-admin-secondary btn-admin-sm">Clear</a>
+    </form>
 
-    <main class="admin-container">
-        <% if (typeof success !=='undefined' && success) { %>
-            <div class="alert alert-success">
-                <%= success %>
-            </div>
-            <% } %>
-                <% if (typeof error !=='undefined' && error) { %>
-                    <div class="alert alert-error">
-                        <%= error %>
-                    </div>
-                    <% } %>
-
-                        <div class="page-header">
-                            <h1 class="page-title">🎟️ Manage Tickets</h1>
-                        </div>
-
-                        <!-- Filters -->
-                        <form method="GET" class="filters-bar">
-                            <div class="form-group">
-                                <input type="text" name="search" placeholder="Search QR, phone, name..."
-                                    value="<%= filters.search || '' %>">
-                            </div>
-                            <div class="form-group">
-                                <select name="status">
-                                    <option value="">All Statuses</option>
-                                    <option value="PAID" <%=filters.status==='PAID' ? 'selected' : '' %>>Paid</option>
-                                    <option value="PENDING" <%=filters.status==='PENDING' ? 'selected' : '' %>>Pending
-                                    </option>
-                                    <option value="FAILED" <%=filters.status==='FAILED' ? 'selected' : '' %>>Failed
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <select name="match_id">
-                                    <option value="">All Matches</option>
-                                    <% matches.forEach(function(m) { %>
-                                        <option value="<%= m.id %>" <%=filters.match_id===m.id ? 'selected' : '' %>>
-                                            <%= m.team_home %> vs <%= m.team_away %>
-                                        </option>
-                                        <% }); %>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn-admin btn-admin-primary btn-admin-sm">Filter</button>
-                            <a href="/admin/tickets" class="btn-admin btn-admin-secondary btn-admin-sm">Clear</a>
-                        </form>
-
-                        <div class="admin-table-wrapper">
-                            <table class="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>eSewa Ref</th>
-                                        <th>Match</th>
-                                        <th>Customer</th>
-                                        <th>Qty</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Used</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% if (tickets.length===0) { %>
-                                        <tr>
-                                            <td colspan="8" style="text-align: center; color: var(--admin-text-muted);">
-                                                No tickets found</td>
-                                        </tr>
+    <div class="admin-table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>eSewa Ref</th>
+                    <th>Match</th>
+                    <th>Customer</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Used</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (tickets.length===0) { %>
+                    <tr>
+                        <td colspan="8" style="text-align: center; color: var(--admin-text-muted);">
+                            No tickets found</td>
+                    </tr>
+                    <% } else { %>
+                        <% tickets.forEach(function(t) { %>
+                            <tr>
+                                <td>
+                                    <code
+                                        style="color: #f59e0b; font-size: 0.75rem;"><%= t.esewa_transaction_id || '—' %></code>
+                                </td>
+                                <td>
+                                    <%= t.team_home %> vs <%= t.team_away %>
+                                </td>
+                                <td>
+                                    <%= t.user_name || 'Guest' %><br>
+                                        <small style="color: var(--admin-text-muted);">
+                                            <%= t.user_phone || '' %>
+                                        </small>
+                                </td>
+                                <td>
+                                    <%= t.quantity %>
+                                </td>
+                                <td>Rs. <%= Number(t.total_amount).toLocaleString() %>
+                                </td>
+                                <td>
+                                    <% if (t.status==='PAID' ) { %>
+                                        <span class="badge badge-success">Paid</span>
+                                        <% } else if (t.status==='PENDING' ) { %>
+                                            <span class="badge badge-warning">Pending</span>
+                                            <% } else { %>
+                                                <span class="badge badge-danger">
+                                                    <%= t.status %>
+                                                </span>
+                                                <% } %>
+                                </td>
+                                <td>
+                                    <% if (t.used_at) { %>
+                                        <span class="badge badge-info">Used</span>
                                         <% } else { %>
-                                            <% tickets.forEach(function(t) { %>
-                                                <tr>
-                                                    <td>
-                                                        <code
-                                                            style="color: #f59e0b; font-size: 0.75rem;"><%= t.esewa_transaction_id || '—' %></code>
-                                                    </td>
-                                                    <td>
-                                                        <%= t.team_home %> vs <%= t.team_away %>
-                                                    </td>
-                                                    <td>
-                                                        <%= t.user_name || 'Guest' %><br>
-                                                            <small style="color: var(--admin-text-muted);">
-                                                                <%= t.user_phone || '' %>
-                                                            </small>
-                                                    </td>
-                                                    <td>
-                                                        <%= t.quantity %>
-                                                    </td>
-                                                    <td>Rs. <%= Number(t.total_amount).toLocaleString() %>
-                                                    </td>
-                                                    <td>
-                                                        <% if (t.status==='PAID' ) { %>
-                                                            <span class="badge badge-success">Paid</span>
-                                                            <% } else if (t.status==='PENDING' ) { %>
-                                                                <span class="badge badge-warning">Pending</span>
-                                                                <% } else { %>
-                                                                    <span class="badge badge-danger">
-                                                                        <%= t.status %>
-                                                                    </span>
-                                                                    <% } %>
-                                                    </td>
-                                                    <td>
-                                                        <% if (t.used_at) { %>
-                                                            <span class="badge badge-info">Used</span>
-                                                            <% } else { %>
-                                                                —
-                                                                <% } %>
-                                                    </td>
-                                                    <td>
-                                                        <% if (t.status==='PENDING' ) { %>
-                                                            <form action="/admin/tickets/<%= t.id %>/approve"
-                                                                method="POST"
-                                                                style="display: inline; margin-right: 0.25rem;">
-                                                                <button type="submit"
-                                                                    class="btn-admin btn-admin-sm btn-admin-primary">✓
-                                                                    Approve</button>
-                                                            </form>
-                                                            <form action="/admin/tickets/<%= t.id %>/reject"
-                                                                method="POST" style="display: inline;">
-                                                                <button type="submit"
-                                                                    class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
-                                                            </form>
-                                                            <% } else if (t.status==='PAID' && !t.used_at) { %>
-                                                                <form action="/admin/tickets/<%= t.id %>/mark-used"
-                                                                    method="POST" style="display: inline;">
-                                                                    <button type="submit"
-                                                                        class="btn-admin btn-admin-sm btn-admin-secondary">Mark
-                                                                        Used</button>
-                                                                </form>
-                                                                <% } else { %>
-                                                                    —
-                                                                    <% } %>
-                                                    </td>
-                                                </tr>
-                                                <% }); %>
-                                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div>
+                                            —
+                                            <% } %>
+                                </td>
+                                <td>
+                                    <% if (t.status==='PENDING' ) { %>
+                                        <form action="/admin/tickets/<%= t.id %>/approve" method="POST"
+                                            style="display: inline; margin-right: 0.25rem;">
+                                            <button type="submit" class="btn-admin btn-admin-sm btn-admin-primary">✓
+                                                Approve</button>
+                                        </form>
+                                        <form action="/admin/tickets/<%= t.id %>/reject" method="POST"
+                                            style="display: inline;">
+                                            <button type="submit"
+                                                class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
+                                        </form>
+                                        <% } else if (t.status==='PAID' && !t.used_at) { %>
+                                            <form action="/admin/tickets/<%= t.id %>/mark-used" method="POST"
+                                                style="display: inline;">
+                                                <button type="submit"
+                                                    class="btn-admin btn-admin-sm btn-admin-secondary">Mark
+                                                    Used</button>
+                                            </form>
+                                            <% } else { %>
+                                                —
+                                                <% } %>
+                                </td>
+                            </tr>
+                            <% }); %>
+                                <% } %>
+            </tbody>
+        </table>
+    </div>
 
-                        <p style="margin-top: 1rem; color: var(--admin-text-muted); font-size: 0.875rem;">
-                            Showing <%= tickets.length %> ticket(s)
-                        </p>
-    </main>
-</body>
+    <p style="margin-top: 1rem; color: var(--admin-text-muted); font-size: 0.875rem;">
+        Showing <%= tickets.length %> ticket(s)
+    </p>
 
-</html>
+    <%- include('footer') %>
