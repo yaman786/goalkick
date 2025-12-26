@@ -818,3 +818,113 @@
         padding-bottom: max(1rem, env(safe-area-inset-bottom));
     }
 }
+
+/* ============================================
+   MOBILE-ONLY UX ENHANCEMENTS (max-width: 480px)
+   ============================================ */
+@media (max-width: 480px) {
+
+    /* Compact Page Header */
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .page-title {
+        font-size: 1.25rem;
+    }
+
+    /* Smaller Add Button */
+    .btn-admin-block {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    /* Compact Match Cards */
+    .admin-table tr {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Left-align data on mobile */
+    .admin-table td {
+        text-align: left;
+        padding: 0.35rem 0;
+    }
+
+    /* Better data labels */
+    .admin-table td::before {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.6;
+    }
+
+    /* Inline team names (compact) */
+    .admin-table td[data-label="Match"],
+    .admin-table td[data-label="Customer"] {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* Smaller stat values */
+    .admin-table td[data-label="Qty"],
+    .admin-table td[data-label="Sold"],
+    .admin-table td[data-label="Revenue"] {
+        font-size: 0.8rem;
+    }
+
+    /* Action buttons row */
+    .admin-table td:last-child {
+        margin-top: 0.75rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Smaller action buttons */
+    .btn-admin-sm {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.7rem;
+    }
+
+    /* Compact stat cards */
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+    }
+
+    /* Navigation improvements */
+    .admin-nav {
+        gap: 0.25rem;
+    }
+
+    .admin-nav-link {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    /* User section compact */
+    .admin-user {
+        font-size: 0.75rem;
+        gap: 0.5rem;
+    }
+
+    /* Section titles */
+    .section-title {
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Pending Approvals compact table */
+    .dashboard-grid .admin-table td {
+        padding: 0.25rem 0;
+    }
+}
