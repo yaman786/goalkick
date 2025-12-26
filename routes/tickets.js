@@ -281,7 +281,7 @@ router.post('/confirm_payment', async (req, res) => {
         console.error('❌ Payment confirmation error:', error);
         res.status(500).render('error', {
             title: 'Error',
-            message: 'Could not submit payment details. Please try again.',
+            message: 'Could not submit payment details. DEBUG: ' + error.message,
             errorCode: 500
         });
     }
