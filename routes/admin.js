@@ -87,8 +87,9 @@ router.get('/logout', (req, res) => {
 });
 
 // ============================================
-// PROTECTED ROUTES (require admin auth)
+// PROTECTED ROUTES (Below this line)
 // ============================================
+
 router.use(requireAdmin);
 
 /**
@@ -134,6 +135,8 @@ router.get('/debug-pending', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+
 
 // ============================================
 // MATCH MANAGEMENT
