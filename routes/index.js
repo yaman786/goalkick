@@ -47,7 +47,8 @@ router.get('/', async (req, res) => {
             },
             formatPrice: (price) => {
                 return `Rs. ${parseFloat(price).toLocaleString('en-NP')}`;
-            }
+            },
+            query: req.query
         });
 
     } catch (error) {

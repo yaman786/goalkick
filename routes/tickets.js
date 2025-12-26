@@ -196,24 +196,37 @@ router.post('/confirm_payment', async (req, res) => {
         }
 
         // Update payment with eSewa reference
-        const updateResult = await db.query(`
-            UPDATE payments SET esewa_ref = $1, status = 'AWAITING_VERIFICATION'
-            WHERE ticket_id = $2
-        `, [esewa_ref.trim(), ticket_id]);
+        try {
+            const updateResult = await db.query(`
+                UPDATE payments SET esewa_ref = $1, status = 'AWAITING_VERIFICATION'
+                WHERE ticket_id = $2
+            `, [esewa_ref.trim(), ticket_id]);
 
-        console.log(`📝 Payment Update Result: ${updateResult.rowCount} rows affected for Ticket ${ticket_id}, Ref: ${esewa_ref}`);
+            console.log(`📝 Payment Update Result: ${updateResult.rowCount} rows affected for Ticket ${ticket_id}, Ref: ${esewa_ref}`);
 
-        // Get ticket info for confirmation
-        const ticketResult = await db.query(`
-            SELECT t.qr_code FROM tickets t WHERE t.id = $1
-        `, [ticket_id]);
+            // Get ticket info for confirmation
+            const ticketResult = await db.query(`
+                SELECT t.qr_code FROM tickets t WHERE t.id = $1
+            `, [ticket_id]);
 
-        const bookingCode = ticketResult.rows[0]?.qr_code || '';
+            const bookingCode = ticketResult.rows[0]?.qr_code || '';
 
-        console.log(`📝 Payment submitted for verification: ${bookingCode}, eSewa ref: ${esewa_ref}`);
+            console.log(`📝 Payment submitted for verification: ${bookingCode}, eSewa ref: ${esewa_ref}`);
 
-        // Redirect to home with success message
-        res.redirect(`/?payment=success&ref=${encodeURIComponent(esewa_ref.trim())}`);
+            // Redirect to home with success message
+            res.redirect(`/?payment=success&ref=${encodeURIComponent(esewa_ref.trim())}`);
+        } catch (dbError) {
+            console.error('❌ DB Error in confirm_payment:', dbError);
+            // Handle duplicate entry or other DB errors gracefully
+            if (dbError.code === '23505') { // Unique constraint violation
+                return res.render('error', {
+                    title: 'Duplicate Submission',
+                    message: 'This transaction ID has already been submitted.',
+                    errorCode: 409
+                });
+            }
+            throw dbError; // Re-throw for global handler if different error
+        }
 
         // ============================================
         // REAL-TIME NOTIFICATION (SOCKET.IO)
