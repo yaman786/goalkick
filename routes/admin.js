@@ -9,6 +9,41 @@ const bcrypt = require('bcrypt');
 const db = require('../config/database');
 const { requireAdmin, redirectIfAuthenticated, attachAdminToLocals } = require('../middleware/adminAuth');
 
+// TEMPORARY: Fix Live DB Schema
+router.get('/fix-db-schema-live', async (req, res) => {
+    // Basic protection: Ensure user is logged in as admin
+    if (!req.session.adminId || req.session.admin.role !== 'admin') { // Changed req.session.user to req.session.admin and req.session.user.role to req.session.admin.role to match existing session structure
+        return res.status(403).send('Unauthorized');
+    }
+
+    try {
+        const client = await db.getClient();
+        try {
+            await client.query('BEGIN');
+
+            // 1. Fix Status Column Length
+            await client.query('ALTER TABLE payments ALTER COLUMN status TYPE VARCHAR(50)');
+
+            // 2. Add Unique Constraint (catch if exists)
+            try {
+                await client.query('ALTER TABLE payments ADD CONSTRAINT unique_esewa_ref UNIQUE (esewa_ref)');
+            } catch (e) {
+                if (e.code !== '42710') throw e; // Ignore "already exists", throw others
+            }
+
+            await client.query('COMMIT');
+            res.send('✅ Database Fixed: Status column expanded & Unique Constraint applied.');
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
+    } catch (err) {
+        res.status(500).send('❌ Migration Failed: ' + err.message);
+    }
+});
+
 // Attach admin info to all admin routes
 router.use(attachAdminToLocals);
 
