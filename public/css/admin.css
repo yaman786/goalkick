@@ -821,110 +821,192 @@
 
 /* ============================================
    MOBILE-ONLY UX ENHANCEMENTS (max-width: 480px)
+   Premium, Centered Card Design
    ============================================ */
 @media (max-width: 480px) {
 
-    /* Compact Page Header */
+    /* Page Header - Clean & Centered */
     .page-header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
         gap: 0.5rem;
+        margin-bottom: 1rem;
     }
 
     .page-title {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
     }
 
-    /* Smaller Add Button */
+    /* Add Button - Full width but not huge */
     .btn-admin-block {
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
-    }
-
-    /* Compact Match Cards */
-    .admin-table tr {
-        padding: 0.75rem;
-        margin-bottom: 0.75rem;
-    }
-
-    /* Left-align data on mobile */
-    .admin-table td {
-        text-align: left;
-        padding: 0.35rem 0;
-    }
-
-    /* Better data labels */
-    .admin-table td::before {
-        font-size: 0.65rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        opacity: 0.6;
-    }
-
-    /* Inline team names (compact) */
-    .admin-table td[data-label="Match"],
-    .admin-table td[data-label="Customer"] {
-        font-weight: 600;
+        padding: 0.75rem 1.25rem;
         font-size: 0.9rem;
+        border-radius: 10px;
     }
 
-    /* Smaller stat values */
-    .admin-table td[data-label="Qty"],
-    .admin-table td[data-label="Sold"],
-    .admin-table td[data-label="Revenue"] {
-        font-size: 0.8rem;
-    }
-
-    /* Action buttons row */
-    .admin-table td:last-child {
-        margin-top: 0.75rem;
-        padding-top: 0.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    /* Smaller action buttons */
-    .btn-admin-sm {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.7rem;
-    }
-
-    /* Compact stat cards */
-    .stat-card {
+    /* ========== MATCH CARD - CENTERED DESIGN ========== */
+    .admin-table tr {
         padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        background: linear-gradient(145deg, var(--admin-surface), rgba(30, 41, 59, 0.8));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Center all content */
+    .admin-table td {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0.4rem 0;
+        border-bottom: none;
+    }
+
+    /* Hide label on Match row (make teams prominent) */
+    .admin-table td[data-label="Match"]::before {
+        display: none;
+    }
+
+    /* Team Names - HERO element */
+    .admin-table td[data-label="Match"] {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+        padding-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+    }
+
+    /* Data Labels - Subtle & Professional */
+    .admin-table td::before {
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 0.15rem;
+        font-weight: 500;
+    }
+
+    /* Data Values - Clean & Readable */
+    .admin-table td {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* Price - Highlight */
+    .admin-table td[data-label="Price"] {
+        color: #4ade80;
+        font-weight: 600;
+    }
+
+    /* Seats Available - Highlight */
+    .admin-table td[data-label="Seats"],
+    .admin-table td[data-label="Available"] {
+        color: #60a5fa;
+        font-weight: 500;
+    }
+
+    /* Status Badge - Centered */
+    .admin-table td[data-label="Status"] {
+        padding: 0.5rem 0;
+    }
+
+    .admin-table td[data-label="Status"]::before {
+        display: none;
+    }
+
+    /* Badge Styling */
+    .badge {
+        font-size: 0.65rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+    }
+
+    /* Action Buttons Row - Centered & Polished */
+    .admin-table td:last-child {
+        flex-direction: row;
+        justify-content: center;
+        gap: 0.75rem;
+        padding-top: 0.75rem;
+        margin-top: 0.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .admin-table td:last-child::before {
+        display: none;
+    }
+
+    /* Buttons - Polished & Touchable */
+    .btn-admin-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+        border-radius: 8px;
+        font-weight: 600;
+        min-width: 70px;
+    }
+
+    /* ========== STAT CARDS - COMPACT ========== */
+    .stats-grid {
+        gap: 0.75rem;
+    }
+
+    .stat-card {
+        padding: 0.875rem;
+        border-radius: 10px;
     }
 
     .stat-value {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
     }
 
     .stat-label {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
+        letter-spacing: 0.5px;
     }
 
-    /* Navigation improvements */
+    .stat-sub {
+        font-size: 0.65rem;
+    }
+
+    /* ========== NAVIGATION - COMPACT ========== */
     .admin-nav {
         gap: 0.25rem;
     }
 
     .admin-nav-link {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.75rem;
+        padding: 0.4rem 0.65rem;
+        font-size: 0.7rem;
     }
 
-    /* User section compact */
+    /* User section */
     .admin-user {
-        font-size: 0.75rem;
-        gap: 0.5rem;
+        font-size: 0.7rem;
+        gap: 0.4rem;
     }
 
     /* Section titles */
     .section-title {
         font-size: 0.85rem;
+        text-align: center;
         margin-bottom: 0.75rem;
     }
 
-    /* Pending Approvals compact table */
+    /* Dashboard Grid */
     .dashboard-grid .admin-table td {
-        padding: 0.25rem 0;
+        padding: 0.3rem 0;
+    }
+
+    /* Filter bar on mobile */
+    .filters-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filters-bar .btn-admin {
+        width: 100%;
+        justify-content: center;
     }
 }
