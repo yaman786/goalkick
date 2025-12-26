@@ -1,4 +1,93 @@
-</main>
-</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    // Audio Context for sound
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-</html>
+    function playNotificationSound() {
+        try {
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(500, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
+
+            gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        } catch (e) {
+            console.error('Audio play failed', e);
+        }
+    }
+
+    // Socket Connection
+    const socket = io();
+
+    socket.on('connect', () => {
+        console.log('✅ Connected to Socket Server');
+        socket.emit('join_admin');
+    });
+
+    socket.on('ticket_sold', (data) => {
+        console.log('🎟️ New Ticket Sold:', data);
+
+        // Play Sound
+        playNotificationSound();
+
+        // Show Toast
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #22c55e;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideIn 0.3s ease-out;
+            font-family: 'Inter', sans-serif;
+            min-width: 300px;
+        `;
+
+        toast.innerHTML = `
+            <div style="font-size: 1.5rem;">💸</div>
+            <div>
+                <div style="font-weight: 700; font-size: 1rem;">Ticket Sold!</div>
+                <div style="font-size: 0.85rem; opacity: 0.9;">${data.count}x to ${data.match}</div>
+                <div style="font-size: 0.75rem; opacity: 0.8; margin-top:0.2rem;">${data.buyer}</div>
+            </div>
+        `;
+
+        document.body.appendChild(toast);
+
+        // Remove after 5 seconds
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease-in forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+    });
+
+    // Add keyframes
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
