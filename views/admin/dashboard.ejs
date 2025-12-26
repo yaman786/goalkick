@@ -37,74 +37,89 @@
     </div>
     </div>
 
-    <!-- Two Columns -->
-    <div class="dashboard-grid">
-        <!-- Recent Tickets -->
-        <div class="admin-section">
-            <h2 class="section-title">🎟️ Recent Tickets</h2>
-            <% if (recentTickets.length===0) { %>
-                <p style="color: var(--admin-text-muted);">No recent tickets</p>
-                <% } else { %>
-                    <div class="admin-table-wrapper">
-                        <table class="admin-table">
-                            <thead>
+    <!-- Pending Approvals -->
+    <div class="admin-section">
+        <h2 class="section-title">⏳ Pending Approvals</h2>
+        <% if (!pendingApprovals || pendingApprovals.length===0) { %>
+            <p style="color: var(--admin-text-muted);">No tickets awaiting approval ✓</p>
+            <% } else { %>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>eSewa Ref</th>
+                                <th>Match</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% pendingApprovals.forEach(function(t) { %>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Match</th>
-                                    <th>Amount</th>
+                                    <td data-label="eSewa Ref">
+                                        <code style="color: #f59e0b;"><%= t.esewa_ref || '—' %></code>
+                                    </td>
+                                    <td data-label="Match">
+                                        <%= t.team_home %> vs <%= t.team_away %>
+                                    </td>
+                                    <td data-label="Amount">Rs. <%= Number(t.total_amount).toLocaleString() %>
+                                    </td>
+                                    <td data-label="Action">
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <form action="/admin/tickets/<%= t.id %>/approve" method="POST"
+                                                style="display: inline;">
+                                                <button type="submit"
+                                                    class="btn-admin btn-admin-sm btn-admin-primary">✓</button>
+                                            </form>
+                                            <form action="/admin/tickets/<%= t.id %>/reject" method="POST"
+                                                style="display: inline;">
+                                                <button type="submit"
+                                                    class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
+                                            </form>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <% recentTickets.forEach(function(t) { %>
-                                    <tr>
-                                        <td data-label="Code"><code><%= t.qr_code %></code></td>
-                                        <td data-label="Match">
-                                            <%= t.team_home %> vs <%= t.team_away %>
-                                        </td>
-                                        <td data-label="Amount">Rs. <%= Number(t.total_amount).toLocaleString() %>
-                                        </td>
-                                    </tr>
-                                    <% }); %>
-                            </tbody>
-                        </table>
-                    </div>
-                    <% } %>
-        </div>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } %>
+    </div>
 
-        <!-- Upcoming Matches -->
-        <div class="admin-section">
-            <h2 class="section-title">🏟️ Upcoming Matches</h2>
-            <% if (upcomingMatches.length===0) { %>
-                <p style="color: var(--admin-text-muted);">No upcoming matches</p>
-                <% } else { %>
-                    <div class="admin-table-wrapper">
-                        <table class="admin-table">
-                            <thead>
+    <!-- Upcoming Matches -->
+    <div class="admin-section">
+        <h2 class="section-title">🏟️ Upcoming Matches</h2>
+        <% if (upcomingMatches.length===0) { %>
+            <p style="color: var(--admin-text-muted);">No upcoming matches</p>
+            <% } else { %>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Match</th>
+                                <th>Date</th>
+                                <th>Sold</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% upcomingMatches.forEach(function(m) { %>
                                 <tr>
-                                    <th>Match</th>
-                                    <th>Date</th>
-                                    <th>Sold</th>
+                                    <td data-label="Match">
+                                        <%= m.team_home %> vs <%= m.team_away %>
+                                    </td>
+                                    <td data-label="Date">
+                                        <%= new Date(m.match_date).toLocaleDateString() %>
+                                    </td>
+                                    <td data-label="Sold">
+                                        <%= m.tickets_sold || 0 %>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <% upcomingMatches.forEach(function(m) { %>
-                                    <tr>
-                                        <td data-label="Match">
-                                            <%= m.team_home %> vs <%= m.team_away %>
-                                        </td>
-                                        <td data-label="Date">
-                                            <%= new Date(m.match_date).toLocaleDateString() %>
-                                        </td>
-                                        <td data-label="Sold">
-                                            <%= m.tickets_sold || 0 %>
-                                        </td>
-                                    </tr>
-                                    <% }); %>
-                            </tbody>
-                        </table>
-                    </div>
-                    <% } %>
-        </div>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } %>
+    </div>
     </div>
 
     <%- include('footer') %>

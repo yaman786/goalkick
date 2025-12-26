@@ -98,13 +98,13 @@ router.get('/', async (req, res) => {
     try {
         // Get stats
         const stats = await getAdminStats();
-        const recentTickets = await getRecentTickets(10);
+        const pendingApprovals = await getPendingApprovals(10);
         const upcomingMatches = await getUpcomingMatches(5);
 
         res.render('admin/dashboard', {
             title: 'Admin Dashboard',
             stats,
-            recentTickets,
+            pendingApprovals,
             upcomingMatches
         });
     } catch (error) {
@@ -112,7 +112,7 @@ router.get('/', async (req, res) => {
         res.render('admin/dashboard', {
             title: 'Admin Dashboard',
             stats: { revenue: 0, ticketsSold: 0, matchesCount: 0, usersCount: 0 },
-            recentTickets: [],
+            pendingApprovals: [],
             upcomingMatches: [],
             error: 'Failed to load dashboard data'
         });
@@ -528,13 +528,15 @@ async function getAdminStats() {
     return result.rows[0];
 }
 
-async function getRecentTickets(limit) {
+async function getPendingApprovals(limit) {
     const result = await db.query(`
-        SELECT t.*, m.team_home, m.team_away, u.name as user_name, u.phone as user_phone
+        SELECT t.*, m.team_home, m.team_away, u.name as user_name, u.phone as user_phone,
+               p.esewa_ref
         FROM tickets t
         JOIN matches m ON t.match_id = m.id
         LEFT JOIN users u ON t.user_id = u.id
-        WHERE t.status = 'PAID'
+        LEFT JOIN payments p ON t.id = p.ticket_id
+        WHERE t.status = 'PENDING'
         ORDER BY t.created_at DESC
         LIMIT $1
     `, [limit]);
