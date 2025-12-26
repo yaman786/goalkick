@@ -119,6 +119,22 @@ router.get('/', async (req, res) => {
     }
 });
 
+/**
+ * GET /admin/debug-pending - Debug route to verify backend data
+ */
+router.get('/debug-pending', async (req, res) => {
+    try {
+        const pendingApprovals = await getPendingApprovals(10);
+        res.json({
+            count: pendingApprovals.length,
+            debug_info: 'This is raw data from backend',
+            data: pendingApprovals
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // ============================================
 // MATCH MANAGEMENT
 // ============================================
