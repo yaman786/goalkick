@@ -139,6 +139,69 @@
                 }
             }
         }
+
+        // =============================================
+        // REAL-TIME DASHBOARD UPDATE (Pending Approvals)
+        // =============================================
+        if (data.ticket && (window.location.pathname === '/admin' || window.location.pathname === '/admin/')) {
+            const t = data.ticket;
+            // Find the Pending Approvals section (first admin-table on dashboard)
+            const pendingSection = document.querySelector('.admin-section');
+            if (pendingSection) {
+                // Check if there's a "No tickets awaiting" message
+                const emptyMsg = pendingSection.querySelector('p');
+                if (emptyMsg && emptyMsg.textContent.includes('No tickets')) {
+                    // Create table structure
+                    const tableWrapper = document.createElement('div');
+                    tableWrapper.className = 'admin-table-wrapper';
+                    tableWrapper.innerHTML = `
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>eSewa Ref</th>
+                                    <th>Match</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    `;
+                    emptyMsg.replaceWith(tableWrapper);
+                }
+
+                const tbody = pendingSection.querySelector('.admin-table tbody');
+                if (tbody) {
+                    const newRow = document.createElement('tr');
+                    newRow.style.animation = 'fadeIn 0.5s ease-out';
+                    newRow.innerHTML = `
+                        <td data-label="eSewa Ref">
+                            <code style="color: #f59e0b;">${t.esewa_ref || '—'}</code>
+                        </td>
+                        <td data-label="Match">${t.team_home} vs ${t.team_away}</td>
+                        <td data-label="Amount">Rs. ${Number(t.total_amount).toLocaleString()}</td>
+                        <td data-label="Action">
+                            <div style="display: flex; gap: 0.5rem;">
+                                <form action="/admin/tickets/${t.id}/approve" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn-admin btn-admin-sm btn-admin-primary">✓</button>
+                                </form>
+                                <form action="/admin/tickets/${t.id}/reject" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
+                                </form>
+                            </div>
+                        </td>
+                    `;
+                    tbody.insertBefore(newRow, tbody.firstChild);
+
+                    // Flash highlight
+                    newRow.style.background = 'rgba(34, 197, 94, 0.3)';
+                    setTimeout(() => {
+                        newRow.style.transition = 'background 1s ease';
+                        newRow.style.background = '';
+                    }, 2000);
+                }
+            }
+        }
     });
 
     // Add keyframes for animations
