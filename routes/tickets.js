@@ -246,7 +246,7 @@ router.post('/confirm_payment', async (req, res) => {
                         // For table row injection
                         ticket: {
                             id: ticket.id,
-                            esewa_ref: ticket.esewa_ref || esewa_ref.trim(),
+                            payment_ref: ticket.esewa_ref || esewa_ref.trim(),
                             team_home: ticket.team_home,
                             team_away: ticket.team_away,
                             user_name: ticket.user_name || 'Guest',

@@ -57,7 +57,7 @@
                             <% pendingApprovals.forEach(function(t) { %>
                                 <tr>
                                     <td data-label="eSewa Ref">
-                                        <code style="color: #f59e0b;"><%= t.esewa_ref || '—' %></code>
+                                        <code style="color: #f59e0b;"><%= t.payment_ref || '—' %></code>
                                     </td>
                                     <td data-label="Match">
                                         <%= t.team_home %> vs <%= t.team_away %>

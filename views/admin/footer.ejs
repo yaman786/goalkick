@@ -92,7 +92,7 @@
                 newRow.style.animation = 'fadeIn 0.5s ease-out';
                 newRow.innerHTML = `
                     <td data-label="eSewa Ref">
-                        <code style="color: #f59e0b; font-size: 0.75rem;">${t.esewa_ref || '—'}</code>
+                        <code style="color: #f59e0b; font-size: 0.75rem;">${t.payment_ref || '—'}</code>
                     </td>
                     <td data-label="Match">${t.team_home} vs ${t.team_away}</td>
                     <td data-label="Customer">
@@ -176,12 +176,12 @@
                     newRow.style.animation = 'fadeIn 0.5s ease-out';
                     newRow.innerHTML = `
                         <td data-label="eSewa Ref">
-                            <code style="color: #f59e0b;">${t.esewa_ref || '—'}</code>
+                            <code style="color: #f59e0b;">${t.payment_ref || '—'}</code>
                         </td>
                         <td data-label="Match">${t.team_home} vs ${t.team_away}</td>
                         <td data-label="Amount">Rs. ${Number(t.total_amount).toLocaleString()}</td>
                         <td data-label="Action">
-                            <div style="display: flex; gap: 0.5rem;">
+                            <div style="display: flex; gap: 0.5rem; justify-content: center;">
                                 <form action="/admin/tickets/${t.id}/approve" method="POST" style="display: inline;">
                                     <button type="submit" class="btn-admin btn-admin-sm btn-admin-primary">✓</button>
                                 </form>

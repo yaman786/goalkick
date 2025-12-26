@@ -531,7 +531,7 @@ async function getAdminStats() {
 async function getPendingApprovals(limit) {
     const result = await db.query(`
         SELECT t.*, m.team_home, m.team_away, u.name as user_name, u.phone as user_phone,
-               p.esewa_ref
+               p.esewa_ref AS payment_ref
         FROM tickets t
         JOIN matches m ON t.match_id = m.id
         LEFT JOIN users u ON t.user_id = u.id
