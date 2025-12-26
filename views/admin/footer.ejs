@@ -62,22 +62,86 @@
         toast.innerHTML = `
             <div style="font-size: 1.5rem;">💸</div>
             <div>
-                <div style="font-weight: 700; font-size: 1rem;">Ticket Sold!</div>
-                <div style="font-size: 0.85rem; opacity: 0.9;">${data.count}x to ${data.match}</div>
+                <div style="font-weight: 700; font-size: 1rem;">New Ticket Request!</div>
+                <div style="font-size: 0.85rem; opacity: 0.9;">${data.count}x for ${data.match}</div>
                 <div style="font-size: 0.75rem; opacity: 0.8; margin-top:0.2rem;">${data.buyer}</div>
             </div>
         `;
 
         document.body.appendChild(toast);
 
-        // Remove after 5 seconds
+        // Remove toast after 4 seconds
         setTimeout(() => {
             toast.style.animation = 'slideOut 0.3s ease-in forwards';
             setTimeout(() => toast.remove(), 300);
-        }, 5000);
+        }, 4000);
+
+        // =============================================
+        // REAL-TIME TABLE UPDATE (No page refresh!)
+        // =============================================
+        if (data.ticket && window.location.pathname.includes('/admin/tickets')) {
+            const t = data.ticket;
+            const tbody = document.querySelector('.admin-table tbody');
+            if (tbody) {
+                // Remove "No tickets found" row if exists
+                const emptyRow = tbody.querySelector('td[colspan]');
+                if (emptyRow) emptyRow.closest('tr').remove();
+
+                // Create new row
+                const newRow = document.createElement('tr');
+                newRow.style.animation = 'fadeIn 0.5s ease-out';
+                newRow.innerHTML = `
+                    <td data-label="eSewa Ref">
+                        <code style="color: #f59e0b; font-size: 0.75rem;">${t.esewa_ref || '—'}</code>
+                    </td>
+                    <td data-label="Match">${t.team_home} vs ${t.team_away}</td>
+                    <td data-label="Customer">
+                        ${t.user_name}<br>
+                        <small style="color: var(--admin-text-muted);">${t.user_phone}</small>
+                    </td>
+                    <td data-label="Qty">${t.quantity}</td>
+                    <td data-label="Amount">Rs. ${Number(t.total_amount).toLocaleString()}</td>
+                    <td data-label="Status">
+                        <span class="badge badge-warning">Pending</span>
+                    </td>
+                    <td data-label="Used">—</td>
+                    <td data-label="Actions">
+                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; width: 100%;">
+                            <form action="/admin/tickets/${t.id}/approve" method="POST" style="display: inline;">
+                                <button type="submit" class="btn-admin btn-admin-sm btn-admin-primary">✓ Approve</button>
+                            </form>
+                            <form action="/admin/tickets/${t.id}/reject" method="POST" style="display: inline;">
+                                <button type="submit" class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
+                            </form>
+                            <form action="/admin/tickets/${t.id}/delete" method="POST" style="display: inline;" 
+                                onsubmit="return confirm('⚠️ Are you sure?');">
+                                <button type="submit" class="btn-admin btn-admin-sm btn-admin-danger" title="Delete">🗑️</button>
+                            </form>
+                        </div>
+                    </td>
+                `;
+
+                // Insert at top of table
+                tbody.insertBefore(newRow, tbody.firstChild);
+
+                // Flash highlight effect
+                newRow.style.background = 'rgba(34, 197, 94, 0.3)';
+                setTimeout(() => {
+                    newRow.style.transition = 'background 1s ease';
+                    newRow.style.background = '';
+                }, 2000);
+
+                // Update ticket count text if exists
+                const countText = document.querySelector('p[style*="margin-top: 1rem"]');
+                if (countText) {
+                    const currentCount = parseInt(countText.textContent.match(/\d+/)?.[0] || '0');
+                    countText.textContent = `Showing ${currentCount + 1} ticket(s)`;
+                }
+            }
+        }
     });
 
-    // Add keyframes
+    // Add keyframes for animations
     const style = document.createElement('style');
     style.innerHTML = `
         @keyframes slideIn {
@@ -87,6 +151,10 @@
         @keyframes slideOut {
             from { transform: translateX(0); opacity: 1; }
             to { transform: translateX(100%); opacity: 0; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     `;
     document.head.appendChild(style);

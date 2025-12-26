@@ -88,12 +88,14 @@
 
             <div id="successBanner" class="success-banner" style="display: none;">
                 <div class="success-banner-icon">✅</div>
-                <div class="success-banner-title">Payment Submitted Successfully!</div>
+                <div class="success-banner-title">Payment Details Submitted</div>
                 <div class="success-banner-text">
                     Your eSewa Transaction ID:<br>
-                    <span class="success-banner-ref" id="esewaRefDisplay">—</span><br>
-                    We're verifying your payment. Usually takes 5-30 minutes.<br>
-                    <strong>Use "Find Ticket" anytime to check your ticket status.</strong>
+                    <span class="success-banner-ref" id="esewaRefDisplay">—</span><br><br>
+                    <strong>Thank you for your purchase.</strong><br>
+                    Our team will verify your payment shortly.<br><br>
+                    To view or download your ticket, visit <strong>"Find Ticket"</strong> and enter your eSewa
+                    Transaction ID above.
                 </div>
                 <a href="/find-ticket" class="btn btn-primary" style="margin-top: 1rem;">Find My Ticket</a>
             </div>
@@ -171,44 +173,6 @@
             <p>© 2025 GoalKick Lite. Built for Nepal 🇳🇵</p>
         </footer>
     </div>
-    <script>
-        // Check for Payment Success and show Alert
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('payment') === 'success') {
-            const ref = urlParams.get('ref') || 'Submitted';
-
-            // Create and show a custom modal/alert
-            const alertDiv = document.createElement('div');
-            alertDiv.style.cssText = `
-                position: fixed;
-                top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(0,0,0,0.85);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999;
-                backdrop-filter: blur(5px);
-            `;
-
-            alertDiv.innerHTML = `
-                <div style="background: linear-gradient(145deg, #1e1e35, #252545); padding: 2.5rem; border-radius: 20px; text-align: center; max-width: 90%; width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);">
-                    <div style="font-size: 4rem; margin-bottom: 1rem;">⏳</div>
-                    <h2 style="color: #ecc94b; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif;">Verification Pending</h2>
-                    <p style="color: #a0a0b0; margin-bottom: 1.5rem; line-height: 1.6;">
-                        Your payment reference <strong>${ref}</strong> has been submitted.
-                        <br><br>
-                        Please wait while our admin verifies your transaction. You will receive your confirmed ticket shortly.
-                    </p>
-                    <button onclick="this.closest('div').parentElement.remove(); window.history.replaceState({}, document.title, '/');" 
-                        style="background: #22c55e; color: white; border: none; padding: 1rem 2rem; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; font-size: 1rem; transition: transform 0.2s;">
-                        Okay, Got it
-                    </button>
-                </div>
-            `;
-
-            document.body.appendChild(alertDiv);
-        }
-    </script>
 </body>
 
 </html>

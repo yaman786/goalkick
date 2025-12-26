@@ -221,24 +221,43 @@ router.post('/confirm_payment', async (req, res) => {
         try {
             const io = req.app.get('io');
             if (io) {
-                // Fetch match details for the notification
-                const matchResult = await db.query(`
-                    SELECT m.team_home, m.team_away, m.venue, t.quantity, t.total_amount
+                // Fetch FULL ticket details for real-time table update
+                const fullTicketResult = await db.query(`
+                    SELECT t.id, t.status, t.quantity, t.total_amount, t.used_at,
+                           m.team_home, m.team_away,
+                           u.name as user_name, u.phone as user_phone,
+                           p.esewa_ref
                     FROM tickets t
                     JOIN matches m ON t.match_id = m.id
+                    LEFT JOIN users u ON t.user_id = u.id
+                    LEFT JOIN payments p ON t.id = p.ticket_id
                     WHERE t.id = $1
                 `, [ticket_id]);
 
-                if (matchResult.rows.length > 0) {
-                    const info = matchResult.rows[0];
+                if (fullTicketResult.rows.length > 0) {
+                    const ticket = fullTicketResult.rows[0];
                     io.to('admin_notifications').emit('ticket_sold', {
-                        amount: info.total_amount,
-                        count: info.quantity,
-                        match: `${info.team_home} vs ${info.team_away}`,
-                        buyer: 'Manual Verification',
-                        timestamp: new Date()
+                        // For toast
+                        amount: ticket.total_amount,
+                        count: ticket.quantity,
+                        match: `${ticket.team_home} vs ${ticket.team_away}`,
+                        buyer: ticket.user_name || 'Customer',
+                        timestamp: new Date(),
+                        // For table row injection
+                        ticket: {
+                            id: ticket.id,
+                            esewa_ref: ticket.esewa_ref || esewa_ref.trim(),
+                            team_home: ticket.team_home,
+                            team_away: ticket.team_away,
+                            user_name: ticket.user_name || 'Guest',
+                            user_phone: ticket.user_phone || '',
+                            quantity: ticket.quantity,
+                            total_amount: ticket.total_amount,
+                            status: 'PENDING',
+                            used_at: null
+                        }
                     });
-                    console.log('📡 Emitted ticket_sold event (Manual)');
+                    console.log('📡 Emitted ticket_sold event with full data');
                 }
             }
         } catch (socketError) {
