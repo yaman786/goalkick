@@ -69,18 +69,28 @@
             </style>
 
             <script>
-                // Show success banner if payment=success in URL
+                // Unified Payment Success Handler
                 document.addEventListener('DOMContentLoaded', function () {
                     const params = new URLSearchParams(window.location.search);
                     if (params.get('payment') === 'success') {
                         const ref = params.get('ref') || '';
+
+                        // 1. Show Banner
                         const banner = document.getElementById('successBanner');
                         if (banner) {
                             banner.style.display = 'block';
                             const refSpan = document.getElementById('esewaRefDisplay');
                             if (refSpan && ref) refSpan.textContent = ref;
                         }
-                        // Clean URL
+
+                        // 2. Show Modal (New enhancement)
+                        const modal = document.getElementById('verificationModal');
+                        if (modal && ref) {
+                            document.getElementById('modalRef').textContent = ref;
+                            modal.style.display = 'flex';
+                        }
+
+                        // 3. Clean URL (Only after UI is updated)
                         window.history.replaceState({}, document.title, '/');
                     }
                 });
@@ -90,22 +100,32 @@
                 <div class="success-banner-icon">✅</div>
                 <div class="success-banner-title">Payment Details Submitted</div>
                 <div class="success-banner-text">
-                    Your eSewa Transaction ID:<br>
-                    <span class="success-banner-ref" id="esewaRefDisplay">—</span><br><br>
-                    <strong>Thank you for your purchase.</strong><br>
-                    Our team will verify your payment shortly.<br><br>
-                    To view or download your ticket, visit <strong>"Find Ticket"</strong> and enter your eSewa
-                    Transaction ID above.
+                    Your eSewa Transaction ID: <strong style="color: #fff;"><span
+                            id="esewaRefDisplay">—</span></strong><br>
+                    <span style="display: inline-block; margin-top: 0.5rem;">
+                        Wait for verification (approx 5-10 mins).<br>
+                        Check "Find Ticket" for status.
+                    </span>
                 </div>
-                <a href="/find-ticket" class="btn btn-primary" style="margin-top: 1rem;">Find My Ticket</a>
+                <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center;">
+                    <a href="/find-ticket" class="btn btn-sm btn-primary">Find Ticket</a>
+                    <button onclick="document.getElementById('successBanner').style.display='none'"
+                        class="btn btn-sm btn-outline">Close</button>
+                </div>
             </div>
 
             <section class="hero">
                 <h1>🏆 Nepal Football Tickets</h1>
                 <p class="hero-subtitle">Book your match tickets instantly with eSewa payment</p>
+                <div style="margin-top: 2rem;">
+                    <a href="#matches" class="btn btn-primary"
+                        style="padding: 1rem 3rem; font-size: 1.1rem; box-shadow: 0 4px 14px 0 rgba(34, 197, 94, 0.39);">
+                        Browse Matches 👇
+                    </a>
+                </div>
             </section>
 
-            <section class="matches-section">
+            <section class="matches-section" id="matches">
                 <h2 class="section-title">Upcoming Matches</h2>
 
                 <% if (matches.length===0) { %>
@@ -193,28 +213,7 @@
         </div>
     </div>
 
-    <script>
-        function closeModal() {
-            document.getElementById('verificationModal').style.display = 'none';
-            // Clean URL
-            const url = new URL(window.location);
-            url.searchParams.delete('payment');
-            url.searchParams.delete('ref');
-            window.history.replaceState({}, '', url);
-        }
 
-        // Check URL for payment success
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('payment') === 'success') {
-                const ref = urlParams.get('ref');
-                if (ref) {
-                    document.getElementById('modalRef').textContent = ref;
-                    document.getElementById('verificationModal').style.display = 'flex';
-                }
-            }
-        });
-    </script>
 </body>
 
 </html>

@@ -213,6 +213,43 @@ img {
 }
 
 /* ============================================
+   UX POLISH IMPROVEMENTS
+   ============================================ */
+/* Hero Text Readability */
+.hero p.lead {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    /* Improved mobile readability */
+}
+
+/* Form Focus States */
+.form-control:focus,
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--color-accent-green);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+    /* Prominent focus ring */
+}
+
+/* Desktop Match Card Improvements */
+@media (min-width: 768px) {
+    .match-card .btn-primary {
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        display: flex;
+        /* Centering */
+    }
+}
+
+.match-info h5 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+
+/* ============================================
    MATCHES GRID
    ============================================ */
 .matches-grid {

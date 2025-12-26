@@ -41,14 +41,19 @@
     <div class="admin-section">
         <h2 class="section-title">⏳ Pending Approvals</h2>
         <% if (!pendingApprovals || pendingApprovals.length===0) { %>
-            <p style="color: var(--admin-text-muted);">No tickets awaiting approval ✓</p>
+            <div
+                style="text-align: center; padding: 3rem; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5;">✅</div>
+                <h3 style="margin-bottom: 0.5rem; color: var(--admin-text-muted);">All Caught Up</h3>
+                <p style="color: var(--admin-text-muted); font-size: 0.9rem;">No pending ticket verifications.</p>
+            </div>
             <% } else { %>
                 <div class="admin-table-wrapper">
                     <table class="admin-table">
                         <thead>
                             <tr>
                                 <th>eSewa Ref</th>
-                                <th>Match</th>
+                                <th style="width: 250px;">Match</th>
                                 <th>Amount</th>
                                 <th>Action</th>
                             </tr>
@@ -57,23 +62,25 @@
                             <% pendingApprovals.forEach(function(t) { %>
                                 <tr>
                                     <td data-label="eSewa Ref">
-                                        <code style="color: #f59e0b;"><%= t.payment_ref || '—' %></code>
+                                        <code
+                                            style="color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 0.2rem 0.5rem; border-radius: 4px;"><%= t.payment_ref || '—' %></code>
                                     </td>
-                                    <td data-label="Match">
+                                    <td data-label="Match" style="font-weight: 500;">
                                         <%= t.team_home %> vs <%= t.team_away %>
                                     </td>
-                                    <td data-label="Amount">Rs. <%= Number(t.total_amount).toLocaleString() %>
+                                    <td data-label="Amount" style="color: var(--admin-accent-green);">Rs. <%=
+                                            Number(t.total_amount).toLocaleString() %>
                                     </td>
                                     <td data-label="Action">
                                         <div style="display: flex; gap: 0.5rem;">
                                             <form action="/admin/tickets/<%= t.id %>/approve" method="POST"
                                                 style="display: inline;">
-                                                <button type="submit"
-                                                    class="btn-admin btn-admin-sm btn-admin-primary">✓</button>
+                                                <button type="submit" title="Approve"
+                                                    class="btn-admin btn-admin-sm btn-admin-primary">Verify ✓</button>
                                             </form>
                                             <form action="/admin/tickets/<%= t.id %>/reject" method="POST"
                                                 style="display: inline;">
-                                                <button type="submit"
+                                                <button type="submit" title="Reject"
                                                     class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
                                             </form>
                                         </div>
