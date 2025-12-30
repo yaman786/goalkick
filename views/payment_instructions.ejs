@@ -199,14 +199,15 @@
         <div class="payment-container">
             <div class="payment-header">
                 <div class="payment-icon">💳</div>
-                <h1 class="payment-title">Complete Your Payment</h1>
-                <p class="payment-subtitle">Send payment via eSewa to confirm your booking</p>
+                <h1 class="payment-title" style="font-family: 'Khand', sans-serif;">भुक्तानी पूरा गर्नुहोस्</h1>
+                <p class="payment-subtitle">तपाईंको बुकिङ सुनिश्चित गर्न eSewa मार्फत भुक्तानी गर्नुहोस्</p>
             </div>
 
             <div class="booking-summary">
-                <div class="booking-code">
+                <!-- Booking Code removed as per user request -->
+                <!-- <div class="booking-code">
                     <%= ticket.bookingCode %>
-                </div>
+                </div> -->
                 <div class="booking-match">
                     <%= match.team_home %> vs <%= match.team_away %>
                 </div>
@@ -216,17 +217,17 @@
                 <div class="step">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <h4>Open eSewa App</h4>
-                        <p>Go to "Send Money" or scan the QR code below</p>
+                        <h4>eSewa एप खोल्नुहोस्</h4>
+                        <p>"Send Money" मा जानुहोस् वा तलको QR कोड स्क्यान गर्नुहोस्</p>
                     </div>
                 </div>
 
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <h4>Send to this eSewa ID</h4>
+                        <h4>यो eSewa ID मा पठाउनुहोस्</h4>
                         <div class="esewa-box">
-                            <div class="esewa-label">eSewa Mobile Number</div>
+                            <div class="esewa-label">eSewa मोबाइल नम्बर</div>
                             <div class="esewa-id">
                                 <%= esewaId %>
                             </div>
@@ -237,15 +238,15 @@
                 <div class="step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <h4>Send Exact Amount</h4>
+                        <h4>यति रकम पठाउनुहोस्</h4>
                         <div class="amount-box">
-                            <div class="amount-label">Amount to Pay</div>
-                            <div class="amount-value">Rs. <%= ticket.totalAmount.toLocaleString() %>
+                            <div class="amount-label">तिर्नुपर्ने रकम</div>
+                            <div class="amount-value">रू <%= ticket.totalAmount.toLocaleString('ne-NP') %>
                             </div>
                         </div>
                         <p style="margin-top: 0.5rem;">
-                            <%= ticket.quantity %> ticket<%= ticket.quantity> 1 ? 's' : '' %> × Rs. <%=
-                                        (ticket.totalAmount / ticket.quantity).toLocaleString() %>
+                            <%= ticket.quantity %> टिकट × रू <%= (ticket.totalAmount /
+                                    ticket.quantity).toLocaleString('ne-NP') %>
                         </p>
                     </div>
                 </div>
@@ -253,16 +254,16 @@
                 <div class="step">
                     <div class="step-number">4</div>
                     <div class="step-content">
-                        <h4>Enter Transaction ID</h4>
-                        <p>After payment, eSewa shows a reference/transaction ID. Enter it below.</p>
+                        <h4>Transaction ID राख्नुहोस्</h4>
+                        <p>भुक्तानी गरेपछि, eSewa ले एउटा Reference/Transaction ID देखाउँछ। त्यसलाई तल राख्नुहोस्।</p>
 
                         <form action="/confirm_payment" method="POST" class="confirm-form">
                             <input type="hidden" name="ticket_id" value="<%= ticket.id %>">
                             <label for="esewa_ref">eSewa Transaction ID *</label>
                             <input type="text" id="esewa_ref" name="esewa_ref" required
-                                placeholder="e.g., 0007ABC123 or ref number from eSewa">
+                                placeholder="उदाहरण: 0007ABC123">
                             <button type="submit" class="btn btn-primary btn-block">
-                                ✓ I've Completed Payment
+                                ✓ मैले भुक्तानी गरेँ
                             </button>
                         </form>
                     </div>
@@ -270,12 +271,12 @@
             </div>
 
             <div class="note">
-                ⏱️ Your booking is held for 30 minutes.<br>
-                Complete payment to secure your tickets.
+                ⏱️ तपाईंको बुकिङ ३० मिनेटका लागि होल्ड गरिएको छ।<br>
+                टिकट सुरक्षित गर्न भुक्तानी पूरा गर्नुहोस्।
             </div>
 
             <div style="text-align: center; margin-top: 1.5rem;">
-                <a href="/" style="color: #60a5fa; font-size: 0.875rem;">Cancel and return home</a>
+                <a href="/" style="color: #60a5fa; font-size: 0.875rem;">रद्द गर्नुहोस् र होमपेजमा फर्कनुहोस्</a>
             </div>
         </div>
     </div>

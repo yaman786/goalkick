@@ -314,17 +314,19 @@
                 <div class="qr-section">
                     <% if (ticket.status==='PAID' ) { %>
                         <!-- APPROVED: Show Real QR -->
-                        <div class="qr-wrapper">
-                            <div
-                                style="width: 160px; height: 160px; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                <div id="qrcode"></div>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                            <div class="qr-wrapper">
+                                <div
+                                    style="width: 160px; height: 160px; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                    <div id="qrcode"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div style="text-align: center; margin-top: 1rem;">
-                            <span
-                                style="background: rgba(34, 197, 94, 0.1); color: var(--color-accent); padding: 4px 12px; border-radius: 6px; font-family: monospace; letter-spacing: 1px; font-size: 1.1rem; font-weight: 700; border: 1px solid rgba(34,197,94,0.3);">
-                                <%= ticket.qr_code %>
-                            </span>
+                            <div style="text-align: center;">
+                                <span
+                                    style="background: rgba(34, 197, 94, 0.1); color: var(--color-accent); padding: 6px 12px; border-radius: 6px; font-family: 'Oswald', sans-serif; letter-spacing: 2px; font-size: 1.25rem; font-weight: 700; border: 1px solid rgba(34,197,94,0.4); display: inline-block;">
+                                    <%= ticket.qr_code %>
+                                </span>
+                            </div>
                         </div>
                         <% } else { %>
                             <!-- PENDING: Show Placeholder -->
@@ -343,10 +345,6 @@
                                     </div>
                                 </div>
                                 <div style="text-align: center;">
-                                    <span
-                                        style="display: block; color: #fbbf24; font-family: monospace; letter-spacing: 1px; font-size: 1rem; font-weight: 700; margin-bottom: 6px;">
-                                        <%= ticket.qr_code || 'PROCESSING' %>
-                                    </span>
                                     <span class="pulse-badge"
                                         style="display: inline-block; background: rgba(251, 191, 36, 0.15); color: #fbbf24; font-size: 0.85rem; padding: 8px 16px; border-radius: 8px; border: 2px solid rgba(251,191,36,0.5); letter-spacing: 0.5px; font-weight: 700; animation: pulse-glow 2s ease-in-out infinite;">
                                         🔄 तपाईंको टिकट प्रमाणीकरण प्रक्रियामा छ
