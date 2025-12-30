@@ -9,26 +9,29 @@
     </title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Khand:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
     <div class="app-container">
         <header class="header">
-            <a href="/" class="logo" style="text-decoration: none;">
+            <a href="/" class="logo"
+                style="text-decoration: none; display: flex; align-items: center; width: 100%; justify-content: space-between;">
                 <img src="/images/saubhagya-logo.jpg" alt="Logo"
-                    style="height: 32px; width: 32px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+                    style="height: 32px; width: 32px; border-radius: 50%; object-fit: cover;">
                 <span class="logo-text"
-                    style="color: #111827; text-transform: uppercase; font-weight: 800; letter-spacing: -0.5px; font-size: 0.9rem;">2nd
-                    Prachanda Thaiba Smriti Gold Cup 2082</span>
+                    style="color: #111827; text-transform: uppercase; font-weight: 800; letter-spacing: -0.5px; font-size: 0.9rem; text-align: right;">दोस्रो
+                    प्रचण्ड थैव स्मृति गोल्ड कप २०८२</span>
             </a>
             <!-- Nav removed for checkout focus -->
         </header>
 
         <main class="main-content">
             <section class="checkout-section">
-                <h1 class="checkout-title">🎟️ टिकट खरिद गर्नुहोस्</h1>
+                <h1 class="checkout-title" style="font-family: 'Khand', sans-serif;">🎟️ टिकट खरिद गर्नुहोस्</h1>
 
                 <div class="checkout-container">
                     <div class="match-summary">
@@ -58,7 +61,8 @@
                             <div class="detail-item">
                                 <span class="detail-icon">💺</span>
                                 <span>
-                                    <%= match.available_seats %> seats available
+                                    <%= typeof formatSeats==='function' ? formatSeats(match.available_seats) :
+                                        match.available_seats %> सिट उपलब्ध
                                 </span>
                             </div>
                         </div>
@@ -71,9 +75,12 @@
                                 प्रतियोगिता समर्पित</h4>
                             <ul
                                 style="list-style: none; margin: 0; padding: 0; color: var(--color-text-secondary); font-size: 0.9rem;">
-                                <li style="margin-bottom: 0.25rem;">⭐ <strong>Shahid Prachanda Thaiba</strong></li>
-                                <li style="margin-bottom: 0.25rem;">⭐ <strong>Navin Thapa</strong></li>
-                                <li>⭐ <strong>Birendra G.C.</strong></li>
+                                <li style="margin-bottom: 0.25rem;">⭐ <strong>स्वर्गीय प्रचण्ड थैव</strong></li>
+                                <li style="margin-bottom: 0.25rem;">⭐ <strong>स्वर्गीय नवीन थापा</strong></li>
+                                <li style="margin-bottom: 0.25rem;">⭐ <strong>स्वर्गीय विरेन्द्र जि.सी</strong></li>
+                                <li style="margin-bottom: 0.25rem;">⭐ <strong>स्वर्गीय राज श्रेष्ठ</strong></li>
+                                <li style="margin-bottom: 0.25rem;">⭐ <strong>स्वर्गीय गंगा ब. खत्री</strong></li>
+                                <li>⭐ <strong>स्वर्गीय बसन्त गुरुङ</strong></li>
                             </ul>
                         </div>
 
@@ -172,7 +179,7 @@
             const quantity = document.getElementById('quantity').value;
             const total = ticketPrice * quantity;
             document.getElementById('ticketCount').textContent = quantity;
-            document.getElementById('totalAmount').textContent = 'Rs. ' + total.toLocaleString('en-NP');
+            document.getElementById('totalAmount').textContent = 'रू ' + total.toLocaleString('ne-NP');
         }
     </script>
 </body>

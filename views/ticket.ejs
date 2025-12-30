@@ -328,27 +328,44 @@
                         </div>
                         <% } else { %>
                             <!-- PENDING: Show Placeholder -->
-                            <div class="qr-wrapper" style="opacity: 0.7;">
-                                <div
-                                    style="width: 160px; height: 160px; background: #fef3c7; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; color: #d97706;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="10" />
-                                        <polyline points="12 6 12 12 16 14" />
-                                    </svg>
-                                    <span
-                                        style="font-size: 0.8rem; font-weight: 700; margin-top: 8px; text-transform: uppercase;">पेन्डिङ</span>
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                                <div class="qr-wrapper" style="opacity: 0.7;">
+                                    <div
+                                        style="width: 160px; height: 160px; background: #fef3c7; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; color: #d97706;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <polyline points="12 6 12 12 16 14" />
+                                        </svg>
+                                        <span
+                                            style="font-size: 0.8rem; font-weight: 700; margin-top: 8px; text-transform: uppercase;">पेन्डिङ</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div style="text-align: center; margin-top: 1rem;">
-                                <span
-                                    style="color: #fbbf24; font-family: monospace; letter-spacing: 1px; font-size: 1.1rem; font-weight: 700;">
-                                    <%= ticket.qr_code || 'PROCESSING' %>
-                                </span>
-                                <div
-                                    style="color: #fbbf24; font-size: 0.75rem; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    एडमिन अप्रुभल पर्खँदै
+                                <div style="text-align: center;">
+                                    <span
+                                        style="display: block; color: #fbbf24; font-family: monospace; letter-spacing: 1px; font-size: 1rem; font-weight: 700; margin-bottom: 6px;">
+                                        <%= ticket.qr_code || 'PROCESSING' %>
+                                    </span>
+                                    <span class="pulse-badge"
+                                        style="display: inline-block; background: rgba(251, 191, 36, 0.15); color: #fbbf24; font-size: 0.85rem; padding: 8px 16px; border-radius: 8px; border: 2px solid rgba(251,191,36,0.5); letter-spacing: 0.5px; font-weight: 700; animation: pulse-glow 2s ease-in-out infinite;">
+                                        🔄 तपाईंको टिकट प्रमाणीकरण प्रक्रियामा छ
+                                    </span>
+                                    <style>
+                                        @keyframes pulse-glow {
+
+                                            0%,
+                                            100% {
+                                                box-shadow: 0 0 5px rgba(251, 191, 36, 0.3);
+                                                transform: scale(1);
+                                            }
+
+                                            50% {
+                                                box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+                                                transform: scale(1.02);
+                                            }
+                                        }
+                                    </style>
                                 </div>
                             </div>
                             <% } %>

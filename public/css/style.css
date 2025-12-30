@@ -4,6 +4,11 @@
  */
 
 /* ============================================
+   FONTS
+   ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Khand:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ============================================
    CSS VARIABLES
    ============================================ */
 :root {
@@ -68,7 +73,7 @@ html {
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Mukta', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 16px;
     /* Prevents iOS zoom on input focus */
     line-height: 1.5;
@@ -105,7 +110,7 @@ img {
    LAYOUT
    ============================================ */
 .app-container {
-    min-height: 100vh;
+    min-height: auto;
     display: flex;
     flex-direction: column;
 }
@@ -190,8 +195,10 @@ img {
 }
 
 .hero h1 {
-    font-size: 2rem;
-    font-weight: 800;
+    font-family: 'Khand', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.1;
     margin-bottom: var(--space-sm);
     background: linear-gradient(135deg, var(--color-text-primary), var(--color-accent-green));
     -webkit-background-clip: text;
@@ -690,16 +697,20 @@ img {
 /* Mobile-specific overrides */
 @media (max-width: 767px) {
     .header {
-        flex-direction: column;
+        flex-direction: row;
         gap: var(--space-sm);
         padding: var(--space-sm) var(--space-md);
         justify-content: center;
         align-items: center;
-        /* Center logo */
     }
 
     /* Hide navigation on mobile as requested (remove "menu") */
     .nav {
+        display: none;
+    }
+
+    /* Hide municipality badge on mobile - only show Saubhagya logo */
+    .header-right {
         display: none;
     }
 
@@ -714,7 +725,12 @@ img {
     }
 
     .hero {
-        padding: var(--space-xl) var(--space-md);
+        padding: 1rem var(--space-md);
+        padding-top: 0;
+    }
+
+    .main-content {
+        padding-top: 0;
     }
 
     .hero h1 {
@@ -877,7 +893,7 @@ img {
 /* Hero Section Typography */
 .saubhagya-hero {
     text-align: center;
-    padding: 2rem 1rem;
+    padding: 0.5rem 1rem 2rem 1rem;
 }
 
 .hero-badge {
@@ -1068,10 +1084,10 @@ img {
     /* Hero Massive Typography */
     .saubhagya-hero {
         text-align: left;
-        padding: 5rem 0;
-        display: flex;
-        align-items: center;
-        min-height: 60vh;
+        padding-top: 3rem;
+        padding-bottom: 2rem;
+        display: block;
+        min-height: auto;
     }
 
     .hero-content {

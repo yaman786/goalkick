@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 const { getPaymentDetails } = require('../utils/esewaHelper');
+const { formatBSDate, toNepaliNumeral } = require('../utils/bsDateConverter');
 
 // eSewa configuration
 const ESEWA_MODE = process.env.ESEWA_MODE || 'manual';
@@ -329,14 +330,14 @@ router.get('/view/:id', async (req, res) => {
             ticket,
             alreadyPaid: true, // Viewing existing ticket implies paid/processing
             formatDate: (date) => {
-                return new Date(date).toLocaleDateString('en-NP', {
-                    weekday: 'short',
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
+                const bs = formatBSDate(new Date(date));
+                const time = new Date(date);
+                const hours = time.getHours();
+                const minutes = time.getMinutes();
+                const nepaliHours = toNepaliNumeral(hours > 12 ? hours - 12 : hours || 12);
+                const nepaliMinutes = toNepaliNumeral(minutes.toString().padStart(2, '0'));
+                const period = hours >= 12 ? 'दिउँसो' : 'बिहान';
+                return `${bs}, ${nepaliHours}:${nepaliMinutes} ${period}`;
             }
         });
 

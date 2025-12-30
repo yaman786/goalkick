@@ -11,7 +11,9 @@
     </title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Khand:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 
     <style>
@@ -25,15 +27,28 @@
         <header class="header">
             <!-- Mobile View (< 768px) -->
             <div class="header-mobile-view">
-                <a href="/" class="logo" style="text-decoration: none; margin: 0 auto;">
+                <a href="/" class="logo" style="text-decoration: none;">
                     <img src="/images/saubhagya-logo.jpg" alt="Logo"
-                        style="height: 32px; width: 32px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+                        style="height: 48px; width: 48px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
                 </a>
             </div>
 
             <!-- Desktop View (>= 768px) -->
             <div class="header-desktop-view">
-                <!-- Title removed as it is in Hero Section -->
+                <div class="header-left">
+                    <a href="/" class="logo"
+                        style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+                        <img src="/images/saubhagya-logo.jpg" alt="Organizer"
+                            style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #f3f4f6;">
+                        <div class="header-brand-text" style="display: flex; flex-direction: column; line-height: 1.2;">
+                            <small
+                                style="color: #22c55e; font-size: 0.75rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px;">आयोजक</small>
+                            <span
+                                style="font-weight: 800; color: #1f2937; font-size: 1.1rem; letter-spacing: -0.5px;">सौभाग्य
+                                युवा क्लब</span>
+                        </div>
+                    </a>
+                </div>
             </div>
 
             <div class="header-right">
@@ -101,7 +116,7 @@
                 <div class="hero-actions">
                     <a href="#matches" class="btn btn-primary btn-lg">टिकट किन्नुहोस्</a>
                     <a href="/find-ticket" class="btn btn-outline btn-lg"
-                        style="margin-left: 10px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);">मेरो
+                        style="margin-left: 10px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);">हजुरको
                         टिकट खोज्नुहोस्</a>
                 </div>
 
@@ -164,7 +179,9 @@
                                     <div class="info-item">
                                         <span class="info-label">बाँकी सिट</span>
                                         <span class="info-value seats <%= match.available_seats < 50 ? 'low' : '' %>">
-                                            <%= match.available_seats %> / <%= match.total_seats %>
+                                            <%= typeof formatSeats==='function' ? formatSeats(match.available_seats) :
+                                                match.available_seats %> / <%= typeof formatSeats==='function' ?
+                                                    formatSeats(match.total_seats) : match.total_seats %>
                                         </span>
                                     </div>
                                 </div>

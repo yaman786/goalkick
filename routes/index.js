@@ -6,6 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
+const { formatBSDate, toNepaliNumeral } = require('../utils/bsDateConverter');
 
 /**
  * GET / - Home page with match listings
@@ -36,15 +37,13 @@ router.get('/', async (req, res) => {
             title: 'दोस्रो प्रचण्ड थैव स्मृति गोल्ड कप २०८२',
             matches,
             formatDate: (date) => {
-                return new Date(date).toLocaleDateString('ne-NP', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
+                return formatBSDate(new Date(date));
             },
             formatPrice: (price) => {
-                return `रू ${parseFloat(price).toLocaleString('ne-NP')}`;
+                return `रू ${toNepaliNumeral(parseFloat(price))}`;
+            },
+            formatSeats: (seats) => {
+                return toNepaliNumeral(seats);
             },
             query: req.query
         });
@@ -84,17 +83,13 @@ router.get('/match/:id', async (req, res) => {
             title: `${match.team_home} vs ${match.team_away}`,
             match,
             formatDate: (date) => {
-                return new Date(date).toLocaleDateString('ne-NP', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
+                return formatBSDate(new Date(date));
             },
             formatPrice: (price) => {
-                return `रू ${parseFloat(price).toLocaleString('ne-NP')}`;
+                return `रू ${toNepaliNumeral(parseFloat(price))}`;
+            },
+            formatSeats: (seats) => {
+                return toNepaliNumeral(seats);
             }
         });
 
