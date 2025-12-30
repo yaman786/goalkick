@@ -488,8 +488,17 @@
 
                         html2canvas(ticket, {
                             scale: 2,
-                            backgroundColor: null,
-                            useCORS: true
+                            backgroundColor: '#1a1a2e', // Force background color
+                            useCORS: true,
+                            onclone: (clonedDoc) => {
+                                // Fix for invisible text due to background-clip: text not being supported by html2canvas
+                                const title = clonedDoc.querySelector('.event-title h1');
+                                if (title) {
+                                    title.style.background = 'none';
+                                    title.style.webkitTextFillColor = 'initial'; // Reset transparent text
+                                    title.style.color = '#ffffff'; // Force white text
+                                }
+                            }
                         }).then(canvas => {
                             const link = document.createElement('a');
                             link.download = 'Prachanda-GoldCup-Ticket-<%= ticket.qr_code %>.png';
