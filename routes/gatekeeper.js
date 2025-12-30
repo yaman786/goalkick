@@ -77,7 +77,12 @@ router.post('/validate_ticket', async (req, res) => {
             });
         }
 
+        // ... (previous code)
+
         const ticket = result.rows[0];
+
+        // LOGGING FOR DEBUGGING
+        console.log(`🎫 Found ticket: ID=${ticket.id} Code=${ticket.qr_code} Status=${ticket.status} UsedCount=${ticket.used_count} Qty=${ticket.quantity} UsedAt=${ticket.used_at}`);
 
         // Check if ticket is paid
         if (ticket.status !== 'PAID') {
@@ -90,47 +95,59 @@ router.post('/validate_ticket', async (req, res) => {
             });
         }
 
-        // Check if ticket was already used
-        if (ticket.used_at !== null) {
+        // Initialize used_count if null (legacy support)
+        let usedCount = ticket.used_count || 0;
+        // If used_count is 0 but used_at is set, it means it was fully used before migration
+        if (usedCount === 0 && ticket.used_at !== null) {
+            usedCount = ticket.quantity;
+        }
+
+        const totalQty = ticket.quantity;
+        const remainingQty = totalQty - usedCount;
+
+        // Check availability
+        if (remainingQty <= 0) {
             await client.query('ROLLBACK');
-            const usedTime = new Date(ticket.used_at).toLocaleString('en-NP');
-            console.log(`🚫 Already used ticket: ${cleanCode} at ${usedTime}`);
+            const usedTime = ticket.used_at ? new Date(ticket.used_at).toLocaleString('en-NP') : 'Unknown';
+            console.log(`🚫 Matches used ticket: ${cleanCode}. Used: ${usedCount}/${totalQty}`);
             return res.json({
                 valid: false,
                 status: 'ALREADY_USED',
-                message: `Ticket already used at ${usedTime}`,
+                message: `Ticket already fully used (${usedCount}/${totalQty})`,
                 ticket: {
                     code: cleanCode,
                     match: `${ticket.team_home} vs ${ticket.team_away}`,
-                    usedAt: ticket.used_at
+                    usedAt: ticket.used_at,
+                    qty: totalQty,
+                    used: usedCount
                 }
             });
         }
 
         // ============================================
-        // TICKET IS VALID - MARK AS USED
+        // TICKET IS VALID - RETURN INFO FOR DECISION
         // ============================================
 
-        await client.query(`
-            UPDATE tickets 
-            SET used_at = NOW()
-            WHERE id = $1
-        `, [ticket.id]);
+        // We DO NOT mark as used here anymore. We return "partial" status so user can choose quantity.
 
-        await client.query('COMMIT');
+        await client.query('COMMIT'); // Commit the read (no writes made yet)
 
-        console.log(`✅ Ticket validated: ${cleanCode} - ENTER`);
+        console.log(`✅ Ticket valid for entry: ${cleanCode} - Remaining: ${remainingQty}`);
 
         return res.json({
             valid: true,
-            status: 'ENTER',
-            message: 'Welcome! Enjoy the match!',
+            status: 'VALID',
+            partial: true, // Signal frontend to show options
+            message: `Valid Ticket! (${remainingQty}/${totalQty} remaining)`,
             ticket: {
+                id: ticket.id,
                 code: cleanCode,
                 match: `${ticket.team_home} vs ${ticket.team_away}`,
                 matchDate: ticket.match_date,
                 venue: ticket.venue,
-                quantity: ticket.quantity,
+                quantity: totalQty,
+                usedCount: usedCount,
+                remaining: remainingQty,
                 userName: ticket.user_name || 'Guest'
             }
         });
@@ -143,6 +160,77 @@ router.post('/validate_ticket', async (req, res) => {
             status: 'ERROR',
             message: 'An error occurred while validating the ticket'
         });
+    } finally {
+        client.release();
+    }
+});
+
+/**
+ * POST /gatekeeper/check_in - Process the check-in
+ * Body: { ticket_id, count }
+ */
+router.post('/gatekeeper/check_in', requireGatekeeper, async (req, res) => {
+    const client = await db.getClient();
+    try {
+        const { ticket_id, count } = req.body;
+        const checkInCount = parseInt(count) || 1;
+
+        console.log(`📥 Check-in request: Ticket ${ticket_id}, Count ${checkInCount}`);
+
+        await client.query('BEGIN');
+
+        // Lock the row
+        const result = await client.query('SELECT * FROM tickets WHERE id = $1 FOR UPDATE', [ticket_id]);
+
+        if (result.rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.json({ success: false, message: 'Ticket not found' });
+        }
+
+        const ticket = result.rows[0];
+
+        // Handle legacy usage
+        let currentUsed = ticket.used_count || 0;
+        if (currentUsed === 0 && ticket.used_at !== null) {
+            currentUsed = ticket.quantity;
+        }
+
+        const total = ticket.quantity;
+        const remaining = total - currentUsed;
+
+        if (checkInCount > remaining) {
+            await client.query('ROLLBACK');
+            return res.json({ success: false, message: `Cannot check in ${checkInCount}. Only ${remaining} remaining.` });
+        }
+
+        const newUsedCount = currentUsed + checkInCount;
+
+        // Update used_count
+        let updateQuery = 'UPDATE tickets SET used_count = $1';
+        const params = [newUsedCount];
+
+        // If fully used, set timestamp
+        if (newUsedCount >= total) {
+            updateQuery += ', used_at = NOW()';
+        }
+
+        updateQuery += ' WHERE id = $2';
+        params.push(ticket_id);
+
+        await client.query(updateQuery, params);
+        await client.query('COMMIT');
+
+        console.log(`✅ Check-in successful: Ticket ${ticket_id} - New Used: ${newUsedCount}/${total}`);
+
+        return res.json({
+            success: true,
+            message: `Successfully checked in ${checkInCount} person(s)`
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Check-in error:', error);
+        return res.status(500).json({ success: false, message: 'Server error' });
     } finally {
         client.release();
     }

@@ -96,34 +96,66 @@
                                 <td data-label="Actions">
                                     <div style="display: flex; gap: 0.5rem; justify-content: flex-end; width: 100%;">
                                         <% if (t.status==='PENDING' ) { %>
-                                            <form action="/admin/tickets/<%= t.id %>/approve" method="POST"
-                                                style="display: inline;">
-                                                <button type="submit" class="btn-admin btn-admin-sm btn-admin-primary">✓
-                                                    Approve</button>
-                                            </form>
-                                            <form action="/admin/tickets/<%= t.id %>/reject" method="POST"
-                                                style="display: inline;">
-                                                <button type="submit"
-                                                    class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
-                                            </form>
-                                            <% } else if (t.status==='PAID' && !t.used_at) { %>
-                                                <form action="/admin/tickets/<%= t.id %>/mark-used" method="POST"
-                                                    style="display: inline;">
-                                                    <button type="submit"
-                                                        class="btn-admin btn-admin-sm btn-admin-secondary">Mark
-                                                        Used</button>
-                                                </form>
-                                                <% } else { %>
-                                                    <span>—</span>
-                                                    <% } %>
-
-                                                        <!-- Delete Button (Custom Modal) -->
+                                            <% if (t.esewa_transaction_id) { %>
+                                                <% if (t.esewa_transaction_id) { %>
+                                                    <!-- Standard Flow: Approve/Reject -->
+                                                    <form action="/admin/tickets/<%= t.id %>/approve" method="POST"
+                                                        style="display: inline;">
+                                                        <button type="submit"
+                                                            class="btn-admin btn-admin-sm btn-admin-primary">✓
+                                                            Approve</button>
+                                                    </form>
+                                                    <form action="/admin/tickets/<%= t.id %>/reject" method="POST"
+                                                        style="display: inline;">
+                                                        <button type="submit"
+                                                            class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
+                                                    </form>
+                                                    <% } else { %>
+                                                        <!-- Missing ID Flow: Manual Entry -->
                                                         <button type="button"
-                                                            class="btn-admin btn-admin-sm btn-admin-danger"
-                                                            onclick="openDeleteModal('/admin/tickets/<%= t.id %>/delete')"
-                                                            title="Delete Ticket">
-                                                            🗑️
+                                                            class="btn-admin btn-admin-sm btn-admin-secondary"
+                                                            onclick="openManualEntryModal('<%= t.id %>')">
+                                                            ✏️ Add Ref
                                                         </button>
+                                                        <form action="/admin/tickets/<%= t.id %>/reject" method="POST"
+                                                            style="display: inline;">
+                                                            <button type="submit"
+                                                                class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
+                                                        </form>
+                                                        <% } %>
+                                                            <% } else { %>
+                                                                <!-- Missing ID Flow: Manual Entry -->
+                                                                <button type="button"
+                                                                    class="btn-admin btn-admin-sm btn-admin-secondary"
+                                                                    onclick="openManualEntryModal('<%= t.id %>')">
+                                                                    ✏️ Add Ref
+                                                                </button>
+                                                                <!-- Still allow reject -->
+                                                                <form action="/admin/tickets/<%= t.id %>/reject"
+                                                                    method="POST" style="display: inline;">
+                                                                    <button type="submit"
+                                                                        class="btn-admin btn-admin-sm btn-admin-danger">✗</button>
+                                                                </form>
+                                                                <% } %>
+                                                                    <% } else if (t.status==='PAID' && !t.used_at) { %>
+                                                                        <form
+                                                                            action="/admin/tickets/<%= t.id %>/mark-used"
+                                                                            method="POST" style="display: inline;">
+                                                                            <button type="submit"
+                                                                                class="btn-admin btn-admin-sm btn-admin-secondary">Mark
+                                                                                Used</button>
+                                                                        </form>
+                                                                        <% } else { %>
+                                                                            <span>—</span>
+                                                                            <% } %>
+
+                                                                                <!-- Delete Button (Custom Modal) -->
+                                                                                <button type="button"
+                                                                                    class="btn-admin btn-admin-sm btn-admin-danger"
+                                                                                    onclick="openDeleteModal('/admin/tickets/<%= t.id %>/delete')"
+                                                                                    title="Delete Ticket">
+                                                                                    🗑️
+                                                                                </button>
                                     </div>
                                 </td>
                             </tr>

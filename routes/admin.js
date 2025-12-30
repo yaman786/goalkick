@@ -358,6 +358,16 @@ router.post('/tickets/:id/approve', async (req, res) => {
     try {
         const ticketId = req.params.id;
 
+        // Verify payment reference exists before approving
+        const paymentCheck = await db.query(
+            'SELECT esewa_ref FROM payments WHERE ticket_id = $1',
+            [ticketId]
+        );
+
+        if (paymentCheck.rows.length === 0 || !paymentCheck.rows[0].esewa_ref) {
+            return res.redirect('/admin/tickets?error=Cannot approve: Missing eSewa Transaction ID from user');
+        }
+
         // Generate proper QR code
         const qrCode = 'NEP-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
 
@@ -577,6 +587,7 @@ async function getUpcomingMatches(limit) {
     `, [limit]);
     return result.rows;
 }
+
 
 
 module.exports = router;

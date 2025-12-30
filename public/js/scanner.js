@@ -209,26 +209,57 @@ async function validateTicket(code) {
 function showResult(result) {
     resultOverlay.classList.add('show');
 
-    if (result.valid && result.status === 'ENTER') {
+    if (result.valid && (result.status === 'ENTER' || result.status === 'VALID')) {
         // Valid ticket - GREEN
         resultOverlay.classList.remove('invalid');
         resultOverlay.classList.add('valid');
         resultIcon.textContent = '✅';
-        resultTitle.textContent = 'ENTER';
-        resultMessage.textContent = result.message;
 
-        // Show ticket details
-        if (result.ticket) {
+        // Handle Partial Logic
+        if (result.partial) {
+            resultTitle.textContent = 'VALID TICKET';
+            resultMessage.textContent = 'Select check-in option:';
+
+            const remaining = result.ticket.remaining;
+            const total = result.ticket.quantity;
+            const used = result.ticket.usedCount;
+
             resultDetails.innerHTML = `
-                <p>🎫 <strong>${result.ticket.code}</strong></p>
-                <p>⚽ ${result.ticket.match}</p>
-                <p>👤 ${result.ticket.userName}</p>
-                <p>🎟️ ${result.ticket.quantity} ticket(s)</p>
+                <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <p style="font-size: 1.2rem; font-weight: bold;">🎫 Remaining: ${remaining} / ${total}</p>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Used so far: ${used}</p>
+                    <p>⚽ ${result.ticket.match}</p>
+                    <p>👤 ${result.ticket.userName}</p>
+                </div>
+                
+                <div style="display: flex; gap: 10px; flex-direction: column;">
+                    <button onclick="checkIn('${result.ticket.id}', 1)" style="padding: 1rem; background: white; color: #166534; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">
+                        Check In 1 Person
+                    </button>
+                    ${remaining > 1 ? `
+                    <button onclick="checkIn('${result.ticket.id}', ${remaining})" style="padding: 1rem; background: #14532d; color: white; border: 1px solid white; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">
+                        Check In All Remaining (${remaining})
+                    </button>
+                    ` : ''}
+                </div>
             `;
-            resultDetails.style.display = 'block';
         } else {
-            resultDetails.style.display = 'none';
+            // Standard Single Entry (Fallback or Full)
+            resultTitle.textContent = 'ENTER';
+            resultMessage.textContent = result.message;
+
+            // Show ticket details
+            if (result.ticket) {
+                resultDetails.innerHTML = `
+                    <p>🎫 <strong>${result.ticket.code}</strong></p>
+                    <p>⚽ ${result.ticket.match}</p>
+                    <p>👤 ${result.ticket.userName}</p>
+                    <p>🎟️ ${result.ticket.quantity} ticket(s)</p>
+                `;
+            }
         }
+
+        resultDetails.style.display = 'block';
 
         // Play success sound (if available)
         playSound('success');
@@ -263,6 +294,7 @@ function showResult(result) {
                 <p>🎫 ${result.ticket.code}</p>
                 <p>⚽ ${result.ticket.match}</p>
                 ${result.ticket.usedAt ? `<p>⏰ Used at: ${new Date(result.ticket.usedAt).toLocaleString()}</p>` : ''}
+                ${result.ticket.qty ? `<p>📊 Used: ${result.ticket.used} / ${result.ticket.qty}</p>` : ''}
             `;
             resultDetails.style.display = 'block';
         } else {
@@ -271,6 +303,40 @@ function showResult(result) {
 
         // Play error/used sound
         playSound(soundType);
+    }
+}
+
+/**
+ * Check In Function
+ */
+async function checkIn(ticketId, count) {
+    try {
+        resultMessage.textContent = 'Processing...';
+
+        const response = await fetch('/gatekeeper/check_in', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ticket_id: ticketId, count: count })
+        });
+
+        const res = await response.json();
+
+        if (res.success) {
+            // Success - Close overlay and reset
+            resultTitle.textContent = 'CHECKED IN!';
+            resultMessage.textContent = res.message;
+            resultDetails.innerHTML = `<div style="font-size: 3rem;">✅</div>`;
+            playSound('success');
+
+            setTimeout(() => {
+                closeResult();
+            }, 1500);
+        } else {
+            alert('Error: ' + res.message);
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Check-in failed');
     }
 }
 
