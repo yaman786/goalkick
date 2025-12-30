@@ -9,338 +9,496 @@
     </title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet">
     <style>
-        .ticket-page {
-            min-height: 100vh;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            padding: 2rem 1rem;
+        :root {
+            --color-bg: #0a0a14;
+            --color-card: #141428;
+            --color-accent: #22c55e;
+            --color-text: #ffffff;
+            --color-text-muted: #9ca3af;
         }
 
-        .success-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .success-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            animation: bounce 0.6s ease-out;
-        }
-
-        @keyframes bounce {
-
-            0%,
-            20%,
-            50%,
-            80%,
-            100% {
-                transform: translateY(0);
-            }
-
-            40% {
-                transform: translateY(-20px);
-            }
-
-            60% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .success-title {
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: #22c55e;
-            margin-bottom: 0.5rem;
-        }
-
-        .success-subtitle {
-            color: #a0a0b0;
-        }
-
-        .ticket-card {
-            background: linear-gradient(145deg, #1e1e35, #252545);
-            border-radius: 20px;
-            overflow: hidden;
-            max-width: 400px;
-            margin: 0 auto 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .ticket-header {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .ticket-header h2 {
-            color: white;
-            font-size: 1.25rem;
-            font-weight: 700;
+        body {
             margin: 0;
-        }
-
-        .ticket-header .ticket-code {
-            font-family: 'Courier New', monospace;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            margin-top: 0.75rem;
-            display: inline-block;
-            letter-spacing: 2px;
-        }
-
-        .ticket-body {
-            padding: 1.5rem;
-        }
-
-        .qr-container {
-            background: white;
-            padding: 1rem;
-            border-radius: 16px;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .qr-container img {
-            max-width: 200px;
-            width: 100%;
-            height: auto;
-        }
-
-        .qr-instruction {
-            font-size: 0.75rem;
-            color: #666;
-            margin-top: 0.5rem;
-        }
-
-        .ticket-details {
-            border-top: 2px dashed rgba(255, 255, 255, 0.1);
-            padding-top: 1.5rem;
-        }
-
-        .match-info-ticket {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .teams-ticket {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-
-        .detail-row {
+            padding: 0;
+            background: #0f172a;
+            font-family: 'Inter', sans-serif;
+            color: var(--color-text);
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
-            padding: 0.75rem 0;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ticket-container {
+            width: 100%;
+            max-width: 380px;
+            padding: 20px;
+        }
+
+        /* TICKET CARD */
+        .ticket {
+            background: linear-gradient(160deg, #1a1a2e 0%, #11111f 100%);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        /* HEADER */
+        .ticket-header {
+            background: linear-gradient(90deg, #064e3b 0%, #1a1a2e 100%);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .detail-row:last-child {
-            border-bottom: none;
+        .organizer-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--color-accent);
+            object-fit: cover;
         }
 
-        .detail-label {
-            color: #a0a0b0;
-            font-size: 0.875rem;
+        .organizer-info h3 {
+            margin: 0;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-accent);
         }
 
-        .detail-value {
-            color: white;
-            font-weight: 600;
-            font-size: 0.875rem;
+        .organizer-info h2 {
+            margin: 0;
+            font-size: 0.9rem;
+            font-weight: 700;
         }
 
-        .ticket-footer {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem 1.5rem;
+        /* EVENT TITLE */
+        .event-title {
+            text-align: center;
+            padding: 1.5rem 1rem 0;
+        }
+
+        .event-title h1 {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            line-height: 1.1;
+            margin: 0;
+            background: linear-gradient(to right, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .event-title span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            margin-top: 5px;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        /* MATCH DETAILS */
+        .match-card {
+            padding: 1.5rem;
+        }
+
+        .teams-vs {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .teams-vs::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .team {
+            width: 45%;
             text-align: center;
         }
 
-        .ticket-footer p {
+        .team-name {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .vs-badge {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--color-accent);
+            padding: 4px 8px;
+            border-radius: 6px;
             font-size: 0.75rem;
-            color: #a0a0b0;
-            margin: 0;
+            font-weight: 800;
         }
 
-        .actions {
-            max-width: 400px;
-            margin: 0 auto;
+        /* QR CODE */
+        .qr-section {
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .qr-wrapper {
+            background: white;
+            padding: 12px;
+            border-radius: 16px;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+        }
+
+        .qr-wrapper img {
+            display: block;
+            width: 160px;
+            height: 160px;
+        }
+
+        /* Neon corners */
+        .qr-frame {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid transparent;
+            /* Using simple borders for now for compatibility */
+            pointer-events: none;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 1rem;
-        }
-
-        .btn-download {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-        }
-
-        .alert-info {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
             padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-cell {
             text-align: center;
-            color: #60a5fa;
-            font-size: 0.875rem;
-            max-width: 400px;
-            margin: 0 auto 2rem;
+        }
+
+        .info-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .info-value {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* SPONSORS STRIP */
+        .sponsors-footer {
+            background: #ffffff;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .sponsors-title {
+            color: #64748b;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .sponsors-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .sponsor-logo svg {
+            height: 20px;
+            width: auto;
+            fill: #334155;
+            display: block;
+        }
+
+        /* ACTIONS */
+        .actions {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--color-accent);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            width: 100%;
+            box-sizing: border-box;
+            border: none;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
-    <div class="ticket-page">
-        <div class="success-header">
-            <div class="success-icon">✅</div>
-            <h1 class="success-title">
-                <% if (alreadyPaid) { %>
-                    Your Ticket
-                    <% } else { %>
-                        Payment Successful!
-                        <% } %>
-            </h1>
-            <p class="success-subtitle">
-                <% if (alreadyPaid) { %>
-                    Show this QR code at the gate
-                    <% } else { %>
-                        Your ticket is ready! Save or screenshot this page.
-                        <% } %>
-            </p>
+    <div class="ticket-container">
+
+        <!-- SUCCESS STATUS -->
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">✅</div>
+            <h2 style="margin: 0; color: var(--color-accent);">Ticket Confirmed</h2>
+            <p style="margin: 5px 0 0; color: var(--color-text-muted); font-size: 0.9rem;">See you at the stadium!</p>
         </div>
 
-        <% if (!alreadyPaid && typeof referenceId !=='undefined' ) { %>
-            <div class="alert-info">
-                eSewa Reference: <strong>
-                    <%= referenceId %>
-                </strong>
+        <div class="ticket" id="ticket-card">
+            <!-- HEADER -->
+            <div class="ticket-header">
+                <img src="/images/saubhagya-logo.jpg" alt="Organizer" class="organizer-logo">
+                <div class="organizer-info">
+                    <h3>Organizer</h3>
+                    <h2>Saubhagya Yuwa Club</h2>
+                </div>
             </div>
-            <% } %>
 
-                <div class="ticket-card">
-                    <div class="ticket-header">
-                        <h2>🎫 Entry Ticket</h2>
-                        <div class="ticket-code">
-                            <%= ticket.qr_code %>
-                        </div>
+            <!-- TITLE -->
+            <div class="event-title">
+                <h1>2nd Prachanda Thaiba<br>Smriti Gold Cup</h1>
+                <span>2082</span>
+            </div>
+
+            <!-- MATCH BODY -->
+            <div class="match-card">
+                <!-- TEAMS -->
+                <div class="teams-vs">
+                    <div class="team">
+                        <span class="team-name">
+                            <%= ticket.team_home %>
+                        </span>
                     </div>
-
-                    <div class="ticket-body">
-                        <div class="qr-container">
-                            <img src="<%= qrCode %>" alt="Ticket QR Code">
-                            <p class="qr-instruction">Show this QR code at the stadium gate</p>
-                        </div>
-
-                        <div class="ticket-details">
-                            <div class="match-info-ticket">
-                                <div class="teams-ticket">
-                                    <%= ticket.team_home %> vs <%= ticket.team_away %>
-                                </div>
-                            </div>
-
-                            <div class="detail-row">
-                                <span class="detail-label">📅 Date & Time</span>
-                                <span class="detail-value">
-                                    <%= new Date(ticket.match_date).toLocaleDateString('en-NP', { weekday: 'short' ,
-                                        month: 'short' , day: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
-                                </span>
-                            </div>
-
-                            <div class="detail-row">
-                                <span class="detail-label">📍 Venue</span>
-                                <span class="detail-value">
-                                    <%= ticket.venue %>
-                                </span>
-                            </div>
-
-                            <div class="detail-row">
-                                <span class="detail-label">🎟️ Quantity</span>
-                                <span class="detail-value">
-                                    <%= ticket.quantity %> ticket<%= ticket.quantity> 1 ? 's' : '' %>
-                                </span>
-                            </div>
-
-                            <div class="detail-row">
-                                <span class="detail-label">💰 Amount Paid</span>
-                                <span class="detail-value">Rs. <%= parseFloat(ticket.total_amount).toLocaleString() %>
-                                </span>
-                            </div>
-
-                            <% if (ticket.user_name) { %>
-                                <div class="detail-row">
-                                    <span class="detail-label">👤 Name</span>
-                                    <span class="detail-value">
-                                        <%= ticket.user_name %>
-                                    </span>
-                                </div>
-                                <% } %>
-                        </div>
-                    </div>
-
-                    <div class="ticket-footer">
-                        <p>⚠️ This ticket is valid for ONE entry only.</p>
+                    <span class="vs-badge">VS</span>
+                    <div class="team">
+                        <span class="team-name">
+                            <%= ticket.team_away %>
+                        </span>
                     </div>
                 </div>
 
-                <div class="actions">
-                    <button onclick="downloadTicket()" class="btn btn-primary btn-block btn-download"
-                        style="background: linear-gradient(135deg, #3b82f6, #2563eb); margin-bottom: 1rem;">
-                        📥 Download Ticket
-                    </button>
-                    <a href="/" class="btn btn-outline btn-block">← Back to Matches</a>
+                <!-- QR CODE SECTION -->
+                <div class="qr-section">
+                    <% if (ticket.status==='PAID' ) { %>
+                        <!-- APPROVED: Show Real QR -->
+                        <div class="qr-wrapper">
+                            <div
+                                style="width: 160px; height: 160px; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <div id="qrcode"></div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <span
+                                style="background: rgba(34, 197, 94, 0.1); color: var(--color-accent); padding: 4px 12px; border-radius: 6px; font-family: monospace; letter-spacing: 1px; font-size: 1.1rem; font-weight: 700; border: 1px solid rgba(34,197,94,0.3);">
+                                <%= ticket.qr_code %>
+                            </span>
+                        </div>
+                        <% } else { %>
+                            <!-- PENDING: Show Placeholder -->
+                            <div class="qr-wrapper" style="opacity: 0.7;">
+                                <div
+                                    style="width: 160px; height: 160px; background: #fef3c7; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; color: #d97706;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <polyline points="12 6 12 12 16 14" />
+                                    </svg>
+                                    <span
+                                        style="font-size: 0.8rem; font-weight: 700; margin-top: 8px; text-transform: uppercase;">Pending</span>
+                                </div>
+                            </div>
+                            <div style="text-align: center; margin-top: 1rem;">
+                                <span
+                                    style="color: #fbbf24; font-family: monospace; letter-spacing: 1px; font-size: 1.1rem; font-weight: 700;">
+                                    <%= ticket.qr_code || 'PROCESSING' %>
+                                </span>
+                                <div
+                                    style="color: #fbbf24; font-size: 0.75rem; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    Awaiting Admin Approval
+                                </div>
+                            </div>
+                            <% } %>
                 </div>
+
+                <!-- DETAILS GRID -->
+                <div class="info-grid">
+                    <div class="info-cell">
+                        <span class="info-label">Date & Time</span>
+                        <div class="info-value">
+                            <%= formatDate(ticket.match_date) %>
+                        </div>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">Venue</span>
+                        <div class="info-value">
+                            <%= ticket.venue %>
+                        </div>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">Name</span>
+                        <div class="info-value">
+                            <%= ticket.user_name || 'Guest' %>
+                        </div>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">Type</span>
+                        <div class="info-value">General Entry</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SPONSORS FOOTER (White Strip) -->
+            <div class="sponsors-footer">
+                <div class="sponsors-title">Official Partners</div>
+                <div class="sponsors-logos">
+                    <!-- NTC -->
+                    <div class="sponsor-logo" title="Nepal Telecom">
+                        <svg viewBox="0 0 100 40" width="60" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M10 20C10 14.4772 14.4772 10 20 10H80C85.5228 10 90 14.4772 90 20C90 25.5228 85.5228 30 80 30H20C14.4772 30 10 25.5228 10 20Z"
+                                fill="#334155" fill-opacity="0.2" />
+                            <text x="50" y="24" font-family="Arial" font-size="12" fill="#334155" text-anchor="middle"
+                                font-weight="bold">NTC</text>
+                        </svg>
+                    </div>
+                    <!-- eSewa -->
+                    <div class="sponsor-logo" title="eSewa">
+                        <svg viewBox="0 0 100 40" width="60" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 15H35V25H15V15Z" fill="#334155" />
+                            <circle cx="50" cy="20" r="8" fill="#334155" fill-opacity="0.8" />
+                            <rect x="65" y="12" width="20" height="16" rx="4" fill="#334155" fill-opacity="0.6" />
+                        </svg>
+                    </div>
+                    <!-- WorldLink -->
+                    <div class="sponsor-logo" title="WorldLink">
+                        <svg viewBox="0 0 100 40" width="60" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 20L20 10L30 20L40 10L50 20" stroke="#334155" stroke-width="3"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <text x="75" y="24" font-family="Arial" font-size="10" fill="#334155"
+                                text-anchor="middle">WorldLink</text>
+                        </svg>
+                    </div>
+                    <!-- Himalayan Bank -->
+                    <div class="sponsor-logo" title="Himalayan Bank">
+                        <svg viewBox="0 0 100 40" width="60" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="20" y="8" width="60" height="24" stroke="#334155" stroke-width="2" />
+                            <path d="M20 8L50 32L80 8" stroke="#334155" stroke-width="2" fill="none" />
+                        </svg>
+                    </div>
+                    <!-- Ruslan -->
+                    <div class="sponsor-logo" title="Ruslan">
+                        <svg viewBox="0 0 100 40" width="60" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <text x="50" y="26" font-family="Georgia" font-size="14" fill="#334155" text-anchor="middle"
+                                font-style="italic">Ruslan</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <% if (ticket.status==='PAID' ) { %>
+                <button class="btn" onclick="downloadTicket()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        style="vertical-align: middle; margin-right: 8px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Save Ticket as Image
+                </button>
+                <% } else { %>
+                    <div
+                        style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); padding: 1rem; border-radius: 12px; color: #fbbf24; font-size: 0.9rem; text-align: center;">
+                        <strong>Payment Verification Pending</strong>
+                        <p style="margin: 5px 0 0; opacity: 0.8; font-size: 0.8rem;">Your official ticket will be
+                            available for download once the administrator approves your payment.</p>
+                    </div>
+                    <% } %>
+
+                        <div style="margin-top: 1rem; text-align: center;">
+                            <a href="/"
+                                style="color: var(--color-text-muted); font-size: 0.9rem; text-decoration: none;">Back
+                                to Website</a>
+                        </div>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script>
-        async function downloadTicket() {
-            const ticketCard = document.querySelector('.ticket-card');
-            if (!ticketCard) return;
+    <!-- QR Code Library + HTML2Canvas -->
+    <% if (ticket.status==='PAID' ) { %>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <% } %>
+            <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
-            try {
-                // Show loading
-                const btn = document.querySelector('.btn-download');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '⏳ Generating...';
-                btn.disabled = true;
-
-                // Wait for QR image to load
-                const qrImg = document.querySelector('.qr-container img');
-                if (qrImg && !qrImg.complete) {
-                    await new Promise(resolve => {
-                        qrImg.onload = resolve;
-                        setTimeout(resolve, 2000); // Timeout fallback
+            <script>
+        <% if (ticket.status === 'PAID') { %>
+                    // Generate QR Code only if PAID
+                    new QRCode(document.getElementById("qrcode"), {
+                        text: "<%= ticket.qr_code %>",
+                        width: 160,
+                        height: 160,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
                     });
-                }
+        <% } %>
 
-                // Generate canvas
-                const canvas = await html2canvas(ticketCard, {
-                    backgroundColor: '#1a1a2e',
-                    scale: 2,
-                    useCORS: true,
-                    allowTaint: true
-                });
+                    // Download Function
+                    function downloadTicket() {
+                        const ticket = document.getElementById('ticket-card');
+                        const btn = document.querySelector('.btn');
 
-                // Download as PNG
-                const link = document.createElement('a');
-                link.download = 'goalkick-ticket.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
+                        if (btn) btn.innerHTML = 'Generating...';
 
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            } catch (error) {
-                console.error('Download error:', error);
-                alert('Could not download ticket. Please take a screenshot instead.');
-            }
-        }
-    </script>
+                        html2canvas(ticket, {
+                            scale: 2,
+                            backgroundColor: null,
+                            useCORS: true
+                        }).then(canvas => {
+                            const link = document.createElement('a');
+                            link.download = 'Prachanda-GoldCup-Ticket-<%= ticket.qr_code %>.png';
+                            link.href = canvas.toDataURL();
+                            link.click();
+                            if (btn) btn.innerHTML = 'Save Ticket as Image';
+                        });
+                    }
+            </script>
 </body>
 
 </html>

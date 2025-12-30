@@ -122,9 +122,11 @@ img {
    HEADER
    ============================================ */
 .header {
-    background: rgba(26, 26, 46, 0.95);
+    background: #ffffff;
+    color: #1f2937;
+    /* Dark text for white header */
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     padding: var(--space-md) var(--space-lg);
     position: sticky;
     top: 0;
@@ -132,6 +134,7 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 20px -10px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
@@ -156,8 +159,8 @@ img {
 }
 
 .nav-link {
-    color: var(--color-text-secondary);
-    font-weight: 500;
+    color: #4b5563;
+    font-weight: 600;
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-sm);
     transition: var(--transition-fast);
@@ -165,8 +168,8 @@ img {
 
 .nav-link:hover,
 .nav-link.active {
-    color: var(--color-text-primary);
-    background: rgba(255, 255, 255, 0.1);
+    color: #111827;
+    background: #f3f4f6;
 }
 
 .nav-gatekeeper {
@@ -197,8 +200,11 @@ img {
 }
 
 .hero-subtitle {
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
     font-size: 1.125rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 /* ============================================
@@ -264,12 +270,19 @@ img {
     border-radius: var(--radius-xl);
     padding: var(--space-lg);
     transition: var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .match-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
     border-color: rgba(34, 197, 94, 0.3);
+}
+
+.match-card .btn {
+    margin-top: auto;
 }
 
 .match-date-badge {
@@ -388,6 +401,12 @@ img {
 .btn-primary {
     background: linear-gradient(135deg, var(--color-accent-green), var(--color-accent-green-dark));
     color: white;
+    border-radius: 9999px;
+    /* Pill shape */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
 }
 
 /* Only hover effects on devices that support hover */
@@ -814,5 +833,267 @@ img {
     .header {
         padding-left: max(var(--space-lg), env(safe-area-inset-left));
         padding-right: max(var(--space-lg), env(safe-area-inset-right));
+    }
+}
+
+/* ============================================
+   SAUBHAGYA REBRAND (Mobile-First)
+   ============================================ */
+
+/* Mobile Header (Default) */
+.header-mobile-view {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo-img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    object-fit: contain;
+    background: transparent;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    color: #1a1a2e;
+    /* Dark icon for white header */
+    cursor: pointer;
+    padding: 0;
+}
+
+/* Desktop Header (Hidden on Mobile) */
+.header-desktop-view {
+    display: none;
+}
+
+/* Hero Section Typography */
+.saubhagya-hero {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.hero-badge {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    /* Mobile Size */
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+}
+
+.text-gold {
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.trust-row-mobile {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    opacity: 0.8;
+}
+
+.trust-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.trust-item span {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.trust-item img {
+    height: 48px;
+    /* Slightly larger for visibility */
+    width: 48px;
+    /* Ensure circle */
+    border-radius: 50%;
+    /* Best shape: Circle */
+    object-fit: contain;
+    /* Prevent distortion */
+    background: white;
+    /* Ensure transparency doesn't look weird if present */
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    /* Premium Badge Look */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    /* Grayscale effect optional */
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
+}
+
+.trust-item img:hover {
+    filter: grayscale(0%);
+}
+
+.trust-name {
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+    text-align: center;
+    max-width: 100px;
+    line-height: 1.2;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.divider-vertical {
+    width: 1px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================
+   DESKTOP BREAKPOINT (>= 768px)
+   ============================================ */
+@media (min-width: 768px) {
+
+    /* Header Toggle */
+    .header-mobile-view {
+        display: none;
+    }
+
+    .header-desktop-view {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .header-left,
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+    }
+
+    .header-center {
+        flex: 2;
+        text-align: center;
+    }
+
+    .header-brand-text {
+        line-height: 1.2;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header-brand-text small {
+        color: #15803d;
+        /* Darker green for contrast on white */
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+
+    .brand-logo {
+        height: 50px;
+    }
+
+    .event-title-header {
+        font-size: 1.25rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        color: #111827;
+        /* Dark text for white header */
+    }
+
+    .header-right {
+        justify-content: flex-end;
+    }
+
+    .trust-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-direction: row-reverse;
+        text-align: right;
+    }
+
+    .trust-badge img {
+        height: 50px;
+    }
+
+    .trust-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .trust-badge small {
+        color: #15803d;
+        /* Matching Host Green */
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .trust-badge span {
+        color: #111827;
+        /* Dark Text */
+        font-size: 0.9rem;
+        /* Slightly larger like Host Name */
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* Hero Massive Typography */
+    .saubhagya-hero {
+        text-align: left;
+        padding: 5rem 0;
+        display: flex;
+        align-items: center;
+        min-height: 60vh;
+    }
+
+    .hero-content {
+        max-width: 800px;
+    }
+
+    .hero-title {
+        font-size: 5rem;
+        /* MASSIVE */
+        margin-bottom: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 3rem;
+        text-shadow: none;
+        /* Desktop doesn't need shadow as critically */
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .trust-row-mobile {
+        display: none;
+        /* Hide mobile trust row on desktop (moved to header implicitly or footer) */
     }
 }

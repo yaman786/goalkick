@@ -214,7 +214,8 @@ router.post('/confirm_payment', async (req, res) => {
             console.log(`📝 Payment submitted for verification: ${bookingCode}, eSewa ref: ${esewa_ref}`);
 
             // Redirect to home with success message
-            res.redirect(`/?payment=success&ref=${encodeURIComponent(esewa_ref.trim())}`);
+            // Redirect to the dedicated ticket view
+            res.redirect(`/view/${ticket_id}`);
         } catch (dbError) {
             console.error('❌ DB Error in confirm_payment:', dbError);
             // Handle duplicate entry or other DB errors gracefully
@@ -292,6 +293,61 @@ router.post('/confirm_payment', async (req, res) => {
  */
 router.get('/confirm_payment', (req, res) => {
     res.redirect('/');
+});
+
+/**
+ * GET /view/:id - View ticket by ID or UUID
+ */
+router.get('/view/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Fetch ticket details with match and user info
+        const result = await db.query(`
+            SELECT 
+                t.id, t.qr_code, t.quantity, t.total_amount, t.status, t.created_at,
+                m.team_home, m.team_away, m.match_date, m.venue,
+                u.name as user_name, u.phone as user_phone
+            FROM tickets t
+            JOIN matches m ON t.match_id = m.id
+            LEFT JOIN users u ON t.user_id = u.id
+            WHERE t.id::text = $1 OR t.qr_code = $1
+        `, [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).render('error', {
+                title: 'Ticket Not Found',
+                message: 'The requested ticket could not be found.',
+                errorCode: 404
+            });
+        }
+
+        const ticket = result.rows[0];
+
+        res.render('ticket', {
+            title: `${ticket.team_home} vs ${ticket.team_away} - Ticket`,
+            ticket,
+            alreadyPaid: true, // Viewing existing ticket implies paid/processing
+            formatDate: (date) => {
+                return new Date(date).toLocaleDateString('en-NP', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        });
+
+    } catch (error) {
+        console.error('❌ Error viewing ticket:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'Could not load ticket details.',
+            errorCode: 500
+        });
+    }
 });
 
 module.exports = router;

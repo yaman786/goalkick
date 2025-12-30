@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
         const matches = result.rows;
 
         res.render('index', {
-            title: 'GoalKick Lite - Football Tickets',
+            title: '2nd Prachanda Thaiba Smriti Gold Cup 2082',
             matches,
             formatDate: (date) => {
                 return new Date(date).toLocaleDateString('en-NP', {
@@ -164,13 +164,8 @@ router.post('/find-ticket', async (req, res) => {
             });
         }
 
-        res.render('find-ticket', {
-            title: 'Find Your Ticket',
-            ticket: ticketResult.rows[0],
-            esewaRef: esewa_ref,
-            error: null,
-            searched: true
-        });
+        // Redirect to the dedicated ticket view
+        res.redirect(`/view/${ticketResult.rows[0].id}`);
 
     } catch (error) {
         console.error('❌ Ticket lookup error:', error);

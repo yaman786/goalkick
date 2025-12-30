@@ -13,19 +13,57 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        /* Default Styles */
+    </style>
 </head>
 
 <body>
     <div class="app-container">
+        <!-- New "Smart" Header -->
         <header class="header">
-            <a href="/" class="logo">
-                <span class="logo-icon">⚽</span>
-                <span class="logo-text">GoalKick <span class="logo-lite">Lite</span></span>
-            </a>
-            <nav class="nav">
-                <a href="/" class="nav-link active">Matches</a>
-                <a href="/find-ticket" class="nav-link">Find Ticket</a>
-            </nav>
+            <!-- Mobile View (< 768px) -->
+            <div class="header-mobile-view">
+                <a href="/" class="logo" style="text-decoration: none;">
+                    <img src="/images/saubhagya-logo.jpg" alt="Logo"
+                        style="height: 32px; width: 32px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+                </a>
+                <button class="menu-btn" aria-label="Menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Desktop View (>= 768px) -->
+            <div class="header-desktop-view">
+                <div class="header-left">
+                    <img src="/images/saubhagya-logo.jpg" alt="Host Logo" class="brand-logo">
+                    <div class="header-brand-text">
+                        <small>Organizer</small>
+                        <span>Saubhagya Yuwa Club</span>
+                    </div>
+                </div>
+
+                <div class="header-center">
+                    <!-- Title removed as it is in Hero Section -->
+                </div>
+
+                <div class="header-right">
+                    <div class="trust-badge">
+                        <img src="/images/municipality-logo.jpg" alt="Butwal Municipality">
+                        <div class="trust-text">
+                            <small>Supported By</small>
+                            <span>Butwal Sub-Metropolitan</span>
+                        </div>
+                    </div>
+                    <!-- Buy Ticket Button Removed -->
+                </div>
+            </div>
         </header>
 
         <main class="main-content">
@@ -68,60 +106,36 @@
                 }
             </style>
 
-            <script>
-                // Unified Payment Success Handler
-                document.addEventListener('DOMContentLoaded', function () {
-                    const params = new URLSearchParams(window.location.search);
-                    if (params.get('payment') === 'success') {
-                        const ref = params.get('ref') || '';
+            <!-- Success Banner Removed -->
 
-                        // 1. Show Banner
-                        const banner = document.getElementById('successBanner');
-                        if (banner) {
-                            banner.style.display = 'block';
-                            const refSpan = document.getElementById('esewaRefDisplay');
-                            if (refSpan && ref) refSpan.textContent = ref;
-                        }
+            <section class="hero saubhagya-hero">
+                <div class="hero-content">
+                    <div class="hero-badge">In Memory of Shahid Prachanda Thaiba</div>
+                    <h1 class="hero-title">2nd PRACHANDA THAIBA<br><span class="text-gold">SMRITI GOLD CUP 2082</span>
+                    </h1>
+                    <p class="hero-subtitle">The Pride of Butwal. The Glory of Football.</p>
 
-                        // 2. Show Modal (New enhancement)
-                        const modal = document.getElementById('verificationModal');
-                        if (modal && ref) {
-                            document.getElementById('modalRef').textContent = ref;
-                            modal.style.display = 'flex';
-                        }
+                    <div class="hero-actions">
+                        <a href="#matches" class="btn btn-primary btn-lg">Get Tickets Now</a>
+                        <a href="/find-ticket" class="btn btn-outline btn-lg"
+                            style="margin-left: 10px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);">Find
+                            My Ticket</a>
+                    </div>
 
-                        // 3. Clean URL (Only after UI is updated)
-                        window.history.replaceState({}, document.title, '/');
-                    }
-                });
-            </script>
-
-            <div id="successBanner" class="success-banner" style="display: none;">
-                <div class="success-banner-icon">✅</div>
-                <div class="success-banner-title">Payment Details Submitted</div>
-                <div class="success-banner-text">
-                    Your eSewa Transaction ID: <strong style="color: #fff;"><span
-                            id="esewaRefDisplay">—</span></strong><br>
-                    <span style="display: inline-block; margin-top: 0.5rem;">
-                        Wait for verification (approx 5-10 mins).<br>
-                        Check "Find Ticket" for status.
-                    </span>
-                </div>
-                <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center;">
-                    <a href="/find-ticket" class="btn btn-sm btn-primary">Find Ticket</a>
-                    <button onclick="document.getElementById('successBanner').style.display='none'"
-                        class="btn btn-sm btn-outline">Close</button>
-                </div>
-            </div>
-
-            <section class="hero">
-                <h1>🏆 Nepal Football Tickets</h1>
-                <p class="hero-subtitle">Book your match tickets instantly with eSewa payment</p>
-                <div style="margin-top: 2rem;">
-                    <a href="#matches" class="btn btn-primary"
-                        style="padding: 1rem 3rem; font-size: 1.1rem; box-shadow: 0 4px 14px 0 rgba(34, 197, 94, 0.39);">
-                        Browse Matches 👇
-                    </a>
+                    <!-- Mobile Trust Row (Visible only on Mobile) -->
+                    <div class="trust-row-mobile">
+                        <div class="trust-item">
+                            <span>Organized by</span>
+                            <img src="/images/saubhagya-logo.jpg" alt="Club">
+                            <small class="trust-name">Saubhagya Yuwa Club</small>
+                        </div>
+                        <div class="divider-vertical"></div>
+                        <div class="trust-item">
+                            <span>Supported by</span>
+                            <img src="/images/municipality-logo.jpg" alt="Muni">
+                            <small class="trust-name">Butwal Sub-Metropolitan</small>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -182,6 +196,17 @@
                                                 Sold Out
                                             </button>
                                             <% } %>
+
+                                                <!-- Trophy Sponsor Strip -->
+                                                <div
+                                                    style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed rgba(255,255,255,0.1); width: 100%; text-align: center;">
+                                                    <p
+                                                        style="font-size: 0.7rem; color: #a0a0b0; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                                        🏆 Trophy Sponsor: <span
+                                                            style="color: #fbbf24; font-weight: 600;">Amash
+                                                            Gurung</span>
+                                                    </p>
+                                                </div>
                                 </div>
                                 <% }) %>
                         </div>
@@ -189,29 +214,13 @@
             </section>
         </main>
 
-        <footer class="footer">
-            <p>© 2025 GoalKick Lite. Built for Nepal 🇳🇵</p>
-        </footer>
+        <%- include('partials/sponsors-footer') %>
+
+            <footer class="footer">
+                <p>© 2025 2nd Prachanda Thaiba Smriti Gold Cup 2082. All rights reserved.</p>
+            </footer>
     </div>
-    <!-- Verification Pending Modal -->
-    <div id="verificationModal" class="modal-overlay"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
-        <div
-            style="background: #1e1e35; padding: 2rem; border-radius: 16px; max-width: 90%; width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
-            <h3 style="margin-bottom: 0.5rem;">Verification Pending</h3>
-            <p style="color: #a0a0b0; margin-bottom: 1.5rem; font-size: 0.9rem;">
-                Your eSewa ID <strong style="color: #f59e0b;" id="modalRef"></strong> is being verified.
-                <br>Please wait for admin approval (approx 5-10 mins).
-            </p>
-            <div style="background: rgba(255,165,0,0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
-                <p style="font-size: 0.8rem; color: #f59e0b;">
-                    💡 You can check your status anytime using the "Find Ticket" button.
-                </p>
-            </div>
-            <button onclick="closeModal()" class="btn btn-primary" style="width: 100%;">Okay, I'll Wait</button>
-        </div>
-    </div>
+    <!-- Verification Modal Removed -->
 
 
 </body>

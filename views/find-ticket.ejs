@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Find your GoalKick ticket using eSewa transaction ID">
+    <meta name="description" content="Find your Saubhagya Gold Cup ticket using eSewa transaction ID">
     <meta name="theme-color" content="#1a1a2e">
     <title>
         <%= title %>
@@ -215,9 +215,12 @@
 <body>
     <div class="app-container">
         <header class="header">
-            <a href="/" class="logo">
-                <span class="logo-icon">⚽</span>
-                <span class="logo-text">GoalKick <span class="logo-lite">Lite</span></span>
+            <a href="/" class="logo" style="text-decoration: none;">
+                <img src="/images/saubhagya-logo.jpg" alt="Logo"
+                    style="height: 32px; width: 32px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+                <span class="logo-text"
+                    style="color: #111827; text-transform: uppercase; font-weight: 800; letter-spacing: -0.5px; font-size: 0.9rem;">2nd
+                    Prachanda Thaiba Smriti Gold Cup 2082</span>
             </a>
             <nav class="nav">
                 <a href="/" class="nav-link">Matches</a>
@@ -264,105 +267,12 @@
                             </div>
                             <% } %>
 
-                                <% if (ticket) { %>
-                                    <% if (ticket.status==='PENDING' ) { %>
-                                        <div class="pending-message">
-                                            <div class="pending-icon">⏳</div>
-                                            <h3 style="margin-bottom: 0.5rem;">Payment Being Verified</h3>
-                                            <p style="color: var(--color-text-muted); font-size: 0.875rem;">
-                                                We're verifying your payment. This usually takes 5-30 minutes.<br>
-                                                Your ticket QR code will appear here once approved.
-                                            </p>
-                                        </div>
-                                        <% } %>
-
-                                            <div class="ticket-card" id="ticketCard">
-                                                <div
-                                                    class="ticket-header <%= ticket.status === 'PENDING' ? 'pending' : '' %>">
-                                                    <div class="ticket-match">
-                                                        <%= ticket.team_home %> vs <%= ticket.team_away %>
-                                                    </div>
-                                                    <div class="ticket-venue">📍 <%= ticket.venue %>
-                                                    </div>
-                                                </div>
-
-                                                <div class="ticket-body">
-                                                    <% if (ticket.status==='PAID' && ticket.qr_code) { %>
-                                                        <div class="ticket-qr">
-                                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=<%= encodeURIComponent(ticket.qr_code) %>"
-                                                                alt="Ticket QR Code" id="qrImage">
-                                                            <div class="ticket-qr-code">
-                                                                <%= ticket.qr_code %>
-                                                            </div>
-                                                        </div>
-                                                        <% } %>
-
-                                                            <div class="ticket-details">
-                                                                <div class="ticket-detail">
-                                                                    <div class="ticket-detail-label">📅 Date & Time
-                                                                    </div>
-                                                                    <div class="ticket-detail-value">
-                                                                        <%= new
-                                                                            Date(ticket.match_date).toLocaleDateString('en-NP',
-                                                                            { month: 'short' , day: 'numeric' ,
-                                                                            hour: '2-digit' , minute: '2-digit' }) %>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="ticket-detail">
-                                                                    <div class="ticket-detail-label">🎟️ Quantity</div>
-                                                                    <div class="ticket-detail-value">
-                                                                        <%= ticket.quantity %> ticket(s)
-                                                                    </div>
-                                                                </div>
-                                                                <div class="ticket-detail">
-                                                                    <div class="ticket-detail-label">💰 Amount Paid
-                                                                    </div>
-                                                                    <div class="ticket-detail-value">Rs. <%=
-                                                                            Number(ticket.total_amount).toLocaleString()
-                                                                            %>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="ticket-detail">
-                                                                    <div class="ticket-detail-label">👤 Name</div>
-                                                                    <div class="ticket-detail-value">
-                                                                        <%= ticket.user_name || 'Guest' %>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                </div>
-
-                                                <div class="ticket-status">
-                                                    <% if (ticket.used_at) { %>
-                                                        <span class="status-badge status-used">✓ Used on <%= new
-                                                                Date(ticket.used_at).toLocaleDateString() %></span>
-                                                        <% } else if (ticket.status==='PAID' ) { %>
-                                                            <span class="status-badge status-approved">✓ Valid - Show at
-                                                                Gate</span>
-                                                            <% } else { %>
-                                                                <span class="status-badge status-pending">⏳ Awaiting
-                                                                    Verification</span>
-                                                                <% } %>
-                                                </div>
-                                            </div>
-
-                                            <% if (ticket.status==='PAID' && ticket.qr_code && !ticket.used_at) { %>
-                                                <div class="download-section">
-                                                    <button onclick="downloadTicket()"
-                                                        class="btn btn-primary btn-block">
-                                                        📥 Download Ticket
-                                                    </button>
-                                                </div>
-                                                <% } %>
-                                                    <% } %>
-
-                                                        <div style="text-align: center; margin-top: 2rem;">
-                                                            <a href="/" class="btn btn-outline">← Back to Matches</a>
-                                                        </div>
+                                <!-- Ticket Detail View Removed: Auto-redirects to /view/:id -->
             </section>
         </main>
 
         <footer class="footer">
-            <p>© 2025 GoalKick Lite. Built for Nepal 🇳🇵</p>
+            <p>© 2025 2nd Prachanda Thaiba Smriti Gold Cup 2082. All rights reserved.</p>
         </footer>
     </div>
 
@@ -397,7 +307,7 @@
 
                 // Download as PNG
                 const link = document.createElement('a');
-                link.download = 'goalkick-ticket.png';
+                link.download = 'saubhagya-ticket.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
 
