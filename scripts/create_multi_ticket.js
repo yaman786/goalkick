@@ -6,7 +6,8 @@ async function createMultiTicket() {
         await client.query('BEGIN');
 
         // Create user
-        const userRes = await client.query("INSERT INTO users (phone, name) VALUES ($1, $2) RETURNING id", ['9800000000', 'Multi Ticket User']);
+        const randomPhone = '98' + Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
+        const userRes = await client.query("INSERT INTO users (phone, name) VALUES ($1, $2) RETURNING id", [randomPhone, 'Multi Ticket User']);
         const userId = userRes.rows[0].id;
 
         // Get Match

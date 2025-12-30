@@ -11,11 +11,22 @@ const QRCode = require('qrcode');
  * @returns {string} Unique ticket code
  */
 const generateTicketCode = () => {
+    const MAX_LENGTH = 20;
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Removed confusing chars: I, O, 0, 1
+
+    // Prefix 'NEP-' is 4 chars. We generate 6 random chars. Total 10.
+    // This is well within the safe limit of 20 characters.
     let code = 'NEP-';
     for (let i = 0; i < 6; i++) {
         code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
+
+    // Safety Fallback: Strictly enforce max length
+    if (code.length > MAX_LENGTH) {
+        console.warn(`Generated code exceeded limit (${code.length}). Truncating to ${MAX_LENGTH}.`);
+        return code.substring(0, MAX_LENGTH);
+    }
+
     return code;
 };
 
