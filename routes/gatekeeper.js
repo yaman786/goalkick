@@ -134,10 +134,13 @@ router.post('/validate_ticket', async (req, res) => {
 
         console.log(`✅ Ticket valid for entry: ${cleanCode} - Remaining: ${remainingQty}`);
 
+        const isSingle = totalQty === 1;
+
         return res.json({
             valid: true,
             status: 'VALID',
             partial: true, // Signal frontend to show options
+            isSingle: isSingle, // UI Flag: True if single ticket, False if multi
             message: `Valid Ticket! (${remainingQty}/${totalQty} remaining)`,
             ticket: {
                 id: ticket.id,
@@ -175,7 +178,7 @@ router.post('/gatekeeper/check_in', requireGatekeeper, async (req, res) => {
         const { ticket_id, count } = req.body;
         const checkInCount = parseInt(count) || 1;
 
-        console.log(`📥 Check-in request: Ticket ${ticket_id}, Count ${checkInCount}`);
+        console.log(`📥 Check-in request received: TicketID=${ticket_id}, RequestedCount=${checkInCount}`);
 
         await client.query('BEGIN');
 
@@ -184,15 +187,18 @@ router.post('/gatekeeper/check_in', requireGatekeeper, async (req, res) => {
 
         if (result.rows.length === 0) {
             await client.query('ROLLBACK');
+            console.error(`❌ Check-in failed: Ticket ID ${ticket_id} not found.`);
             return res.json({ success: false, message: 'Ticket not found' });
         }
 
         const ticket = result.rows[0];
+        console.log(`🔍 Current DB State: Qty=${ticket.quantity}, Used=${ticket.used_count}, UsedAt=${ticket.used_at}`);
 
-        // Handle legacy usage
+        // Handle legacy usage logic
         let currentUsed = ticket.used_count || 0;
         if (currentUsed === 0 && ticket.used_at !== null) {
             currentUsed = ticket.quantity;
+            console.log('⚠️ Legacy ticket detected. Treating as fully used.');
         }
 
         const total = ticket.quantity;
@@ -200,6 +206,7 @@ router.post('/gatekeeper/check_in', requireGatekeeper, async (req, res) => {
 
         if (checkInCount > remaining) {
             await client.query('ROLLBACK');
+            console.warn(`⚠️ Check-in denied: Requested ${checkInCount} but only ${remaining} remaining.`);
             return res.json({ success: false, message: `Cannot check in ${checkInCount}. Only ${remaining} remaining.` });
         }
 
@@ -212,15 +219,17 @@ router.post('/gatekeeper/check_in', requireGatekeeper, async (req, res) => {
         // If fully used, set timestamp
         if (newUsedCount >= total) {
             updateQuery += ', used_at = NOW()';
+            console.log(`🎉 Ticket fully redeemed! Setting used_at timestamp.`);
         }
 
-        updateQuery += ' WHERE id = $2';
+        updateQuery += ' WHERE id = $2 RETURNING used_count, used_at';
         params.push(ticket_id);
 
-        await client.query(updateQuery, params);
+        const updateResult = await client.query(updateQuery, params);
         await client.query('COMMIT');
 
-        console.log(`✅ Check-in successful: Ticket ${ticket_id} - New Used: ${newUsedCount}/${total}`);
+        const updatedRow = updateResult.rows[0];
+        console.log(`✅ Check-in successful: Ticket ${ticket_id} - New State: Used=${updatedRow.used_count}/${total}, UsedAt=${updatedRow.used_at}`);
 
         return res.json({
             success: true,
@@ -229,7 +238,7 @@ router.post('/gatekeeper/check_in', requireGatekeeper, async (req, res) => {
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Check-in error:', error);
+        console.error('❌ CHECK-IN SERVER ERROR:', error);
         return res.status(500).json({ success: false, message: 'Server error' });
     } finally {
         client.release();

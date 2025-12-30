@@ -215,36 +215,54 @@ function showResult(result) {
         resultOverlay.classList.add('valid');
         resultIcon.textContent = '✅';
 
-        // Handle Partial Logic
+        // Handle Partial/Single Logic
         if (result.partial) {
             resultTitle.textContent = 'VALID TICKET';
-            resultMessage.textContent = 'Select check-in option:';
 
             const remaining = result.ticket.remaining;
             const total = result.ticket.quantity;
             const used = result.ticket.usedCount;
+            const isSingle = result.isSingle || (total === 1);
 
-            resultDetails.innerHTML = `
-                <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                    <p style="font-size: 1.2rem; font-weight: bold;">🎫 Remaining: ${remaining} / ${total}</p>
-                    <p style="font-size: 0.9rem; opacity: 0.8;">Used so far: ${used}</p>
-                    <p>⚽ ${result.ticket.match}</p>
-                    <p>👤 ${result.ticket.userName}</p>
-                </div>
-                
-                <div style="display: flex; gap: 10px; flex-direction: column;">
-                    <button onclick="checkIn('${result.ticket.id}', 1)" style="padding: 1rem; background: white; color: #166534; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">
-                        Check In 1 Person
+            // 1. Single Ticket UI (Simpler)
+            if (isSingle) {
+                resultMessage.textContent = 'Ticket Valid. Allow entry.';
+                resultDetails.innerHTML = `
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <p style="font-size: 1.2rem; font-weight: bold;">👤 Single Entry</p>
+                        <p>⚽ ${result.ticket.match}</p>
+                        <p>👤 ${result.ticket.userName}</p>
+                    </div>
+                     <button onclick="checkIn('${result.ticket.id}', 1)" style="width: 100%; padding: 1rem; background: #22c55e; color: black; border: none; border-radius: 8px; font-weight: bold; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);">
+                        ✅ APPROVE ENTRY
                     </button>
-                    ${remaining > 1 ? `
-                    <button onclick="checkIn('${result.ticket.id}', ${remaining})" style="padding: 1rem; background: #14532d; color: white; border: 1px solid white; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">
-                        Check In All Remaining (${remaining})
-                    </button>
-                    ` : ''}
-                </div>
-            `;
+                `;
+            }
+            // 2. Multi Ticket UI (Advanced)
+            else {
+                resultMessage.textContent = 'Select check-in option:';
+                resultDetails.innerHTML = `
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <p style="font-size: 1.2rem; font-weight: bold;">🎫 Remaining: ${remaining} / ${total}</p>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Used so far: ${used}</p>
+                        <p>⚽ ${result.ticket.match}</p>
+                        <p>👤 ${result.ticket.userName}</p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; flex-direction: column;">
+                        <button onclick="checkIn('${result.ticket.id}', 1)" style="padding: 1rem; background: white; color: #166534; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">
+                            Check In 1 Person
+                        </button>
+                        ${remaining > 1 ? `
+                        <button onclick="checkIn('${result.ticket.id}', ${remaining})" style="padding: 1rem; background: #14532d; color: white; border: 1px solid white; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">
+                            Check In All Remaining (${remaining})
+                        </button>
+                        ` : ''}
+                    </div>
+                `;
+            }
         } else {
-            // Standard Single Entry (Fallback or Full)
+            // Standard Fallback (should not be reached if partial=true is set correctly)
             resultTitle.textContent = 'ENTER';
             resultMessage.textContent = result.message;
 
