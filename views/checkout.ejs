@@ -28,7 +28,7 @@
 
         <main class="main-content">
             <section class="checkout-section">
-                <h1 class="checkout-title">🎟️ Purchase Tickets</h1>
+                <h1 class="checkout-title">🎟️ टिकट खरिद गर्नुहोस्</h1>
 
                 <div class="checkout-container">
                     <div class="match-summary">
@@ -68,7 +68,7 @@
                             style="margin-bottom: 2rem; padding: 1rem; border-left: 3px solid #f59e0b; background: rgba(245, 158, 11, 0.1); border-radius: 0 8px 8px 0;">
                             <h4
                                 style="color: #f59e0b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">
-                                Tournament Dedicated To</h4>
+                                प्रतियोगिता समर्पित</h4>
                             <ul
                                 style="list-style: none; margin: 0; padding: 0; color: var(--color-text-secondary); font-size: 0.9rem;">
                                 <li style="margin-bottom: 0.25rem;">⭐ <strong>Shahid Prachanda Thaiba</strong></li>
@@ -78,7 +78,7 @@
                         </div>
 
                         <div class="price-display">
-                            <span class="price-label">Price per ticket</span>
+                            <span class="price-label">प्रति टिकट मूल्य</span>
                             <span class="price-amount">
                                 <%= formatPrice(match.price) %>
                             </span>
@@ -89,24 +89,24 @@
                         <input type="hidden" name="match_id" value="<%= match.id %>">
 
                         <div class="form-group">
-                            <label for="name">Full Name *</label>
-                            <input type="text" id="name" name="name" required placeholder="Enter your full name"
+                            <label for="name">पूरा नाम *</label>
+                            <input type="text" id="name" name="name" required placeholder="तपाईंको पूरा नाम"
                                 autocomplete="name">
                         </div>
 
                         <div class="form-group">
-                            <label for="phone">Phone Number *</label>
-                            <input type="tel" id="phone" name="phone" required placeholder="98XXXXXXXX"
+                            <label for="phone">मोबाइल नम्बर *</label>
+                            <input type="tel" id="phone" name="phone" required placeholder="९८XXXXXXXX"
                                 pattern="[0-9]{10}" inputmode="numeric" autocomplete="tel">
-                            <span class="form-hint">10 digit mobile number</span>
+                            <span class="form-hint">१० अंकको मोबाइल नम्बर</span>
                         </div>
 
                         <div class="form-group">
-                            <label for="quantity">Number of Tickets *</label>
+                            <label for="quantity">टिकट संख्या *</label>
                             <select id="quantity" name="quantity" required onchange="updateTotal()">
                                 <% for(let i=1; i <=Math.min(10, match.available_seats); i++) { %>
                                     <option value="<%= i %>">
-                                        <%= i %> ticket<%= i> 1 ? 's' : '' %>
+                                        <%= i %> टिकट
                                     </option>
                                     <% } %>
                             </select>
@@ -114,17 +114,17 @@
 
                         <div class="order-summary">
                             <div class="summary-row">
-                                <span>Tickets</span>
+                                <span>जम्मा टिकट</span>
                                 <span id="ticketCount">1</span>
                             </div>
                             <div class="summary-row">
-                                <span>Price per ticket</span>
-                                <span>
+                                <span>प्रति टिकट मूल्य</span>
+                                <span id="pricePerTicket">
                                     <%= formatPrice(match.price) %>
                                 </span>
                             </div>
                             <div class="summary-row total">
-                                <span>Total Amount</span>
+                                <span>जम्मा रकम</span>
                                 <span id="totalAmount">
                                     <%= formatPrice(match.price) %>
                                 </span>
@@ -138,30 +138,30 @@
                                 <span style="font-size: 1.25rem;">🛡️</span>
                                 <div style="font-size: 0.75rem; color: var(--color-text-secondary); line-height: 1.3;">
                                     <strong
-                                        style="color: var(--color-accent-green); display: block; margin-bottom: 0.1rem;">Official
-                                        Payment Gateway</strong>
-                                    Payment is securely transferred to <strong>Saubhagya Yuwa Club</strong> (Organizer).
+                                        style="color: var(--color-accent-green); display: block; margin-bottom: 0.1rem;">आधिकारिक
+                                        भुक्तानी साझेदार</strong>
+                                    रकम सुरक्षित रूपमा सिधै ट्रान्सफर हुनेछ: <strong>सौभाग्य युवा क्लब</strong> (आयोजक).
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-esewa btn-block">
                                 <img src="https://esewa.com.np/common/images/esewa_logo.png" alt="eSewa"
                                     class="esewa-logo" onerror="this.style.display='none'">
-                                Pay with eSewa
+                                eSewa मार्फत भुक्तानी गर्नुहोस्
                             </button>
                         </div>
 
                         <p class="checkout-note">
-                            You will be redirected to eSewa for secure payment
+                            तपाईंलाई सुरक्षित भुक्तानीको लागि eSewa मा लगिनेछ
                         </p>
                     </form>
                 </div>
 
-                <a href="/" class="back-link">← Back to matches</a>
+                <a href="/" class="back-link">← खेलहरूमा फर्कनुहोस्</a>
             </section>
         </main>
 
         <footer class="footer">
-            <p>© 2025 2nd Prachanda Thaiba Smriti Gold Cup 2082. All rights reserved.</p>
+            <p>© २०८२ दोस्रो प्रचण्ड थैव स्मृति गोल्ड कप. सर्वाधिकार सुरक्षित.</p>
         </footer>
     </div>
 

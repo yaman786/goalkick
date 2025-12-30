@@ -33,20 +33,18 @@ router.get('/', async (req, res) => {
         const matches = result.rows;
 
         res.render('index', {
-            title: '2nd Prachanda Thaiba Smriti Gold Cup 2082',
+            title: 'दोस्रो प्रचण्ड थैव स्मृति गोल्ड कप २०८२',
             matches,
             formatDate: (date) => {
-                return new Date(date).toLocaleDateString('en-NP', {
-                    weekday: 'short',
+                return new Date(date).toLocaleDateString('ne-NP', {
+                    weekday: 'long',
                     year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    month: 'long',
+                    day: 'numeric'
                 });
             },
             formatPrice: (price) => {
-                return `Rs. ${parseFloat(price).toLocaleString('en-NP')}`;
+                return `रू ${parseFloat(price).toLocaleString('ne-NP')}`;
             },
             query: req.query
         });
@@ -86,7 +84,7 @@ router.get('/match/:id', async (req, res) => {
             title: `${match.team_home} vs ${match.team_away}`,
             match,
             formatDate: (date) => {
-                return new Date(date).toLocaleDateString('en-NP', {
+                return new Date(date).toLocaleDateString('ne-NP', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
@@ -96,7 +94,7 @@ router.get('/match/:id', async (req, res) => {
                 });
             },
             formatPrice: (price) => {
-                return `Rs. ${parseFloat(price).toLocaleString('en-NP')}`;
+                return `रू ${parseFloat(price).toLocaleString('ne-NP')}`;
             }
         });
 
@@ -115,7 +113,7 @@ router.get('/match/:id', async (req, res) => {
  */
 router.get('/find-ticket', (req, res) => {
     res.render('find-ticket', {
-        title: 'Find Your Ticket',
+        title: 'आफ्नो टिकट खोज्नुहोस्',
         ticket: null,
         esewaRef: req.query.ref || '',
         error: null,
@@ -132,7 +130,7 @@ router.post('/find-ticket', async (req, res) => {
 
         if (!esewa_ref || esewa_ref.trim().length < 3) {
             return res.render('find-ticket', {
-                title: 'Find Your Ticket',
+                title: 'आफ्नो टिकट खोज्नुहोस्',
                 ticket: null,
                 esewaRef: esewa_ref,
                 error: 'Please enter a valid eSewa transaction ID',
@@ -156,7 +154,7 @@ router.post('/find-ticket', async (req, res) => {
 
         if (ticketResult.rows.length === 0) {
             return res.render('find-ticket', {
-                title: 'Find Your Ticket',
+                title: 'आफ्नो टिकट खोज्नुहोस्',
                 ticket: null,
                 esewaRef: esewa_ref,
                 error: null,
@@ -170,7 +168,7 @@ router.post('/find-ticket', async (req, res) => {
     } catch (error) {
         console.error('❌ Ticket lookup error:', error);
         res.render('find-ticket', {
-            title: 'Find Your Ticket',
+            title: 'आफ्नो टिकट खोज्नुहोस्',
             ticket: null,
             esewaRef: req.body.esewa_ref || '',
             error: 'Something went wrong. Please try again.',

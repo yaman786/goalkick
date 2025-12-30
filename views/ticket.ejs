@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Khand:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&family=Oswald:wght@500;700&display=swap"
         rel="stylesheet">
     <style>
         :root {
@@ -25,7 +25,7 @@
             margin: 0;
             padding: 0;
             background: #0f172a;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Mukta', sans-serif;
             color: var(--color-text);
             min-height: 100vh;
             display: flex;
@@ -88,7 +88,7 @@
         }
 
         .event-title h1 {
-            font-family: 'Oswald', sans-serif;
+            font-family: 'Khand', sans-serif;
             text-transform: uppercase;
             font-size: 1.5rem;
             line-height: 1.1;
@@ -273,8 +273,8 @@
         <!-- SUCCESS STATUS -->
         <div style="text-align: center; margin-bottom: 1.5rem;">
             <div style="font-size: 3rem; margin-bottom: 0.5rem;">✅</div>
-            <h2 style="margin: 0; color: var(--color-accent);">Ticket Confirmed</h2>
-            <p style="margin: 5px 0 0; color: var(--color-text-muted); font-size: 0.9rem;">See you at the stadium!</p>
+            <h2 style="margin: 0; color: var(--color-accent);">टिकट सुनिश्चित भयो</h2>
+            <p style="margin: 5px 0 0; color: var(--color-text-muted); font-size: 0.9rem;">रंगशालामा भेटौँला!</p>
         </div>
 
         <div class="ticket" id="ticket-card">
@@ -282,15 +282,15 @@
             <div class="ticket-header">
                 <img src="/images/saubhagya-logo.jpg" alt="Organizer" class="organizer-logo">
                 <div class="organizer-info">
-                    <h3>Organizer</h3>
-                    <h2>Saubhagya Yuwa Club</h2>
+                    <h3>आयोजक</h3>
+                    <h2>सौभाग्य युवा क्लब</h2>
                 </div>
             </div>
 
             <!-- TITLE -->
             <div class="event-title">
-                <h1>2nd Prachanda Thaiba<br>Smriti Gold Cup</h1>
-                <span>2082</span>
+                <h1>दोस्रो प्रचण्ड थैव<br>स्मृति गोल्ड कप</h1>
+                <span>२०८२</span>
             </div>
 
             <!-- MATCH BODY -->
@@ -338,7 +338,7 @@
                                         <polyline points="12 6 12 12 16 14" />
                                     </svg>
                                     <span
-                                        style="font-size: 0.8rem; font-weight: 700; margin-top: 8px; text-transform: uppercase;">Pending</span>
+                                        style="font-size: 0.8rem; font-weight: 700; margin-top: 8px; text-transform: uppercase;">पेन्डिङ</span>
                                 </div>
                             </div>
                             <div style="text-align: center; margin-top: 1rem;">
@@ -348,7 +348,7 @@
                                 </span>
                                 <div
                                     style="color: #fbbf24; font-size: 0.75rem; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    Awaiting Admin Approval
+                                    एडमिन अप्रुभल पर्खँदै
                                 </div>
                             </div>
                             <% } %>
@@ -357,26 +357,26 @@
                 <!-- DETAILS GRID -->
                 <div class="info-grid">
                     <div class="info-cell">
-                        <span class="info-label">Date & Time</span>
+                        <span class="info-label">मिति र समय</span>
                         <div class="info-value">
                             <%= formatDate(ticket.match_date) %>
                         </div>
                     </div>
                     <div class="info-cell">
-                        <span class="info-label">Venue</span>
+                        <span class="info-label">स्थान</span>
                         <div class="info-value">
                             <%= ticket.venue %>
                         </div>
                     </div>
                     <div class="info-cell">
-                        <span class="info-label">Name</span>
+                        <span class="info-label">नाम</span>
                         <div class="info-value">
                             <%= ticket.user_name || 'Guest' %>
                         </div>
                     </div>
                     <div class="info-cell">
-                        <span class="info-label">Type</span>
-                        <div class="info-value">General Entry</div>
+                        <span class="info-label">प्रकार</span>
+                        <div class="info-value">साधारण प्रवेश</div>
                     </div>
                 </div>
 
@@ -384,7 +384,7 @@
 
             <!-- SPONSORS FOOTER (White Strip) -->
             <div class="sponsors-footer">
-                <div class="sponsors-title">Official Partners</div>
+                <div class="sponsors-title">आधिकारिक साझेदारहरू</div>
                 <div class="sponsors-logos">
                     <!-- NTC -->
                     <div class="sponsor-logo" title="Nepal Telecom">
@@ -441,21 +441,21 @@
                         <polyline points="7 10 12 15 17 10" />
                         <line x1="12" y1="15" x2="12" y2="3" />
                     </svg>
-                    Save Ticket as Image
+                    टिकट डाउनलोड गर्नुहोस्
                 </button>
                 <% } else { %>
                     <div
                         style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); padding: 1rem; border-radius: 12px; color: #fbbf24; font-size: 0.9rem; text-align: center;">
-                        <strong>Payment Verification Pending</strong>
-                        <p style="margin: 5px 0 0; opacity: 0.8; font-size: 0.8rem;">Your official ticket will be
-                            available for download once the administrator approves your payment.</p>
+                        <strong>भुक्तानी रुजु हुँदैछ</strong>
+                        <p style="margin: 5px 0 0; opacity: 0.8; font-size: 0.8rem;">एडमिनले भुक्तानी रुजु गरेपछि
+                            तपाईंको टिकट डाउनलोड गर्न मिल्नेछ|</p>
                     </div>
                     <% } %>
 
                         <div style="margin-top: 1rem; text-align: center;">
                             <a href="/"
-                                style="color: var(--color-text-muted); font-size: 0.9rem; text-decoration: none;">Back
-                                to Website</a>
+                                style="color: var(--color-text-muted); font-size: 0.9rem; text-decoration: none;">वेबसाइटमा
+                                फर्कनुहोस्</a>
                         </div>
         </div>
     </div>
@@ -504,7 +504,7 @@
                             link.download = 'Prachanda-GoldCup-Ticket-<%= ticket.qr_code %>.png';
                             link.href = canvas.toDataURL();
                             link.click();
-                            if (btn) btn.innerHTML = 'Save Ticket as Image';
+                            if (btn) btn.innerHTML = 'टिकट डाउनलोड गर्नुहोस्';
                         });
                     }
             </script>

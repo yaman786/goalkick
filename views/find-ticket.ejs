@@ -232,8 +232,8 @@
             <section class="lookup-section">
                 <div class="lookup-header">
                     <div class="lookup-icon">🎟️</div>
-                    <h1 class="lookup-title">Find Your Ticket</h1>
-                    <p class="lookup-subtitle">Enter your eSewa Transaction ID</p>
+                    <h1 class="lookup-title">आफ्नो टिकट खोज्नुहोस्</h1>
+                    <p class="lookup-subtitle">eSewa ट्रान्जेक्सन आईडी राख्नुहोस्</p>
                 </div>
 
                 <% if (error) { %>
@@ -244,15 +244,15 @@
 
                         <form action="/find-ticket" method="POST" class="lookup-form">
                             <div class="form-group">
-                                <label for="esewa_ref">eSewa Transaction ID</label>
+                                <label for="esewa_ref">eSewa ट्रान्जेक्सन आईडी</label>
                                 <div class="esewa-input-wrapper">
                                     <input type="text" id="esewa_ref" name="esewa_ref" required
-                                        placeholder="Enter transaction ID from eSewa" value="<%= esewaRef %>"
+                                        placeholder="eSewa ट्रान्जेक्सन आईडी यहाँ राख्नुहोस्" value="<%= esewaRef %>"
                                         autocomplete="off">
-                                    <button type="submit" class="btn btn-primary">Find</button>
+                                    <button type="submit" class="btn btn-primary">खोज्नुहोस्</button>
                                 </div>
                                 <small style="color: var(--color-text-muted); display: block; margin-top: 0.5rem;">
-                                    Find this in your eSewa app → Transaction History
+                                    यो आईडी तपाईंको eSewa एपको Transaction History मा फेला पार्न सकिन्छ
                                 </small>
                             </div>
                         </form>
@@ -260,9 +260,9 @@
                         <% if (searched && !ticket) { %>
                             <div class="no-tickets">
                                 <div class="no-tickets-icon">🔍</div>
-                                <p>No ticket found for this transaction ID</p>
+                                <p>कुनै टिकट फेला परेन</p>
                                 <p style="font-size: 0.875rem; margin-top: 0.5rem;">
-                                    Double-check the ID in your eSewa app
+                                    कृपया आईडी पुनः जाँच गर्नुहोस्
                                 </p>
                             </div>
                             <% } %>
@@ -272,7 +272,7 @@
         </main>
 
         <footer class="footer">
-            <p>© 2025 2nd Prachanda Thaiba Smriti Gold Cup 2082. All rights reserved.</p>
+            <p>© २०८२ दोस्रो प्रचण्ड थैव स्मृति गोल्ड कप. सर्वाधिकार सुरक्षित.</p>
         </footer>
     </div>
 
