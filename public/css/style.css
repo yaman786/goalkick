@@ -693,20 +693,24 @@ img {
         flex-direction: column;
         gap: var(--space-sm);
         padding: var(--space-sm) var(--space-md);
-    }
-
-    .nav {
-        width: 100%;
         justify-content: center;
-    }
-
-    .nav-link {
-        flex: 1;
-        text-align: center;
-        min-height: 44px;
-        display: flex;
         align-items: center;
+        /* Center logo */
+    }
+
+    /* Hide navigation on mobile as requested (remove "menu") */
+    .nav {
+        display: none;
+    }
+
+    .logo {
+        margin: 0 auto;
         justify-content: center;
+    }
+
+    /* Ensure text wraps nicely if centered */
+    .logo-text {
+        text-align: center;
     }
 
     .hero {
