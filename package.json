@@ -4,7 +4,7 @@
   "description": "Lightweight Football Ticketing System for Nepal with eSewa Payment Integration",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node scripts/add_used_count.js && node server.js",
     "dev": "node server.js",
     "db:migrate": "node scripts/add_used_count.js",
     "test": "echo \"Error: no test specified\" && exit 1"
