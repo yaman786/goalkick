@@ -76,7 +76,6 @@ async function addUsedCountColumn() {
             console.error('❌ Migration failed:', error.message);
             console.error('   Error code:', error.code);
         }
-    } finally {
         if (client) {
             try {
                 client.release();
@@ -84,8 +83,17 @@ async function addUsedCountColumn() {
                 // Ignore release errors
             }
         }
-        process.exit(0); // Always exit cleanly
+
+        // Only exit if run directly
+        if (require.main === module) {
+            process.exit(0);
+        }
     }
 }
 
-addUsedCountColumn();
+// Run if called directly
+if (require.main === module) {
+    addUsedCountColumn();
+}
+
+module.exports = addUsedCountColumn;

@@ -21,6 +21,11 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
+// DB Migration (Ensure schema is up to date on startup)
+const addUsedCountColumn = require('./scripts/add_used_count');
+// Async migration execution
+addUsedCountColumn().catch(err => console.error('Startup migration failed:', err));
+
 // Make io available to all routes
 app.set('io', io);
 
