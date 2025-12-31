@@ -346,18 +346,15 @@ async function checkIn(ticketId, count) {
         const res = await response.json();
 
         if (res.success) {
-            // Success - Close overlay and reset
-            resultTitle.textContent = 'CHECKED IN!';
-            resultMessage.textContent = res.message;
-            resultDetails.innerHTML = `<div style="font-size: 3rem;">✅</div>`;
+            // Success - Instant return to scanner
             playSound('success');
 
-            // Force clear ID to doubly ensure no socket match
+            // Clear ID immediately
             window.currentTicketId = null;
+            closeResult();
 
-            setTimeout(() => {
-                closeResult();
-            }, 1500);
+            // Optional: Show a non-blocking toast or flash? 
+            // For now, clean & fast as requested.
         } else {
             alert('Error: ' + res.message);
         }
@@ -365,11 +362,10 @@ async function checkIn(ticketId, count) {
         console.error(e);
         alert('Check-in failed');
     } finally {
-        // 2. Reset flag after a delay to allow socket event to pass
-        // The socket event might arrive slightly after response depending on network
+        // Reset flag after a short delay (shorter now since we closed)
         setTimeout(() => {
             window.isProcessingCheckIn = false;
-        }, 2000);
+        }, 1000);
     }
 }
 
