@@ -447,6 +447,13 @@
 
             // If the result overlay is open and showing THIS ticket, update the display
             if (window.currentTicketId && window.currentTicketId === data.ticket_id) {
+
+                // IGNORE if we are the ones processing the check-in
+                if (window.isProcessingCheckIn) {
+                    console.log('🙈 Ignoring self-triggered update');
+                    return;
+                }
+
                 // If fully used now
                 if (data.remaining <= 0) {
                     // Close overlay or show fully used message

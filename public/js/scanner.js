@@ -334,6 +334,9 @@ async function checkIn(ticketId, count) {
     try {
         resultMessage.textContent = 'Processing...';
 
+        // 1. Set flag to ignore socket update from self
+        window.isProcessingCheckIn = true;
+
         const response = await fetch('/gatekeeper/check_in', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -349,7 +352,7 @@ async function checkIn(ticketId, count) {
             resultDetails.innerHTML = `<div style="font-size: 3rem;">✅</div>`;
             playSound('success');
 
-            // Prevent self-alert from socket update
+            // Force clear ID to doubly ensure no socket match
             window.currentTicketId = null;
 
             setTimeout(() => {
@@ -361,6 +364,12 @@ async function checkIn(ticketId, count) {
     } catch (e) {
         console.error(e);
         alert('Check-in failed');
+    } finally {
+        // 2. Reset flag after a delay to allow socket event to pass
+        // The socket event might arrive slightly after response depending on network
+        setTimeout(() => {
+            window.isProcessingCheckIn = false;
+        }, 2000);
     }
 }
 
