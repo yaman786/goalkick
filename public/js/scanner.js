@@ -349,6 +349,9 @@ async function checkIn(ticketId, count) {
             resultDetails.innerHTML = `<div style="font-size: 3rem;">✅</div>`;
             playSound('success');
 
+            // Prevent self-alert from socket update
+            window.currentTicketId = null;
+
             setTimeout(() => {
                 closeResult();
             }, 1500);
@@ -366,6 +369,7 @@ async function checkIn(ticketId, count) {
  */
 function closeResult() {
     resultOverlay.classList.remove('show');
+    window.currentTicketId = null; // Clear active ticket
     lastScannedCode = null;
     scanCooldown = false;
     statusText.textContent = '📷 Point camera at QR code';
