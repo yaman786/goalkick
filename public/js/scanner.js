@@ -224,21 +224,19 @@ function showResult(result) {
             const used = result.ticket.usedCount;
             const isSingle = result.isSingle || (total === 1);
 
-            // 1. Single Ticket UI (Simpler)
+            // 1. Single Ticket UI (Simpler) -> AUTO CHECK-IN
             window.currentTicketId = result.ticket.id; // Expose for socket updates
 
             if (isSingle) {
-                resultMessage.textContent = 'Ticket Valid. Allow entry.';
-                resultDetails.innerHTML = `
-                    <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                        <p style="font-size: 1.2rem; font-weight: bold;">👤 Single Entry</p>
-                        <p>⚽ ${result.ticket.match}</p>
-                        <p>👤 ${result.ticket.userName}</p>
-                    </div>
-                     <button onclick="checkIn('${result.ticket.id}', 1)" style="width: 100%; padding: 1rem; background: #22c55e; color: black; border: none; border-radius: 8px; font-weight: bold; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);">
-                        ✅ APPROVE ENTRY
-                    </button>
-                `;
+                // Auto Check-in: Skip the "Approve Entry" button
+                // Show temporary loading state
+                resultTitle.textContent = 'VALIDATING...';
+                resultMessage.textContent = 'Auto-checking in...';
+                resultDetails.innerHTML = ''; // Clear details
+
+                // Call checkIn explicitly keeping the socket flag logic
+                // Pass 'true' for keepOpen so user can see "Checked In" and click "Scan Next"
+                checkIn(result.ticket.id, 1, true);
             }
             // 2. Multi Ticket UI (Advanced)
             else {
@@ -253,11 +251,11 @@ function showResult(result) {
                     </div>
                     
                     <div style="display: flex; gap: 10px; flex-direction: column;">
-                        <button onclick="checkIn('${result.ticket.id}', 1)" style="padding: 1rem; background: white; color: #166534; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">
+                        <button onclick="checkIn('${result.ticket.id}', 1, false)" style="padding: 1rem; background: white; color: #166534; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">
                             Check In 1 Person
                         </button>
                         ${remaining > 1 ? `
-                        <button onclick="checkIn('${result.ticket.id}', ${remaining})" style="padding: 1rem; background: #14532d; color: white; border: 1px solid white; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">
+                        <button onclick="checkIn('${result.ticket.id}', ${remaining}, false)" style="padding: 1rem; background: #14532d; color: white; border: 1px solid white; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">
                             Check In All Remaining (${remaining})
                         </button>
                         ` : ''}
@@ -282,8 +280,10 @@ function showResult(result) {
 
         resultDetails.style.display = 'block';
 
-        // Play success sound (if available)
-        playSound('success');
+        // Play success sound (if available) - Only if NOT auto-checking immediately (to avoid double sound)
+        if (!result.isSingle && !(result.ticket && result.ticket.remaining === 1)) {
+            playSound('success');
+        }
 
     } else {
         // Invalid ticket - RED
@@ -330,9 +330,9 @@ function showResult(result) {
 /**
  * Check In Function
  */
-async function checkIn(ticketId, count) {
+async function checkIn(ticketId, count, keepOpen = false) {
     try {
-        resultMessage.textContent = 'Processing...';
+        if (!keepOpen) resultMessage.textContent = 'Processing...';
 
         // 1. Set flag to ignore socket update from self
         window.isProcessingCheckIn = true;
@@ -346,15 +346,22 @@ async function checkIn(ticketId, count) {
         const res = await response.json();
 
         if (res.success) {
-            // Success - Instant return to scanner
+            // Success
             playSound('success');
 
             // Clear ID immediately
             window.currentTicketId = null;
-            closeResult();
 
-            // Optional: Show a non-blocking toast or flash? 
-            // For now, clean & fast as requested.
+            if (keepOpen) {
+                // AUTO: Show success and WAIT for user to click "Scan Next"
+                resultTitle.textContent = 'CHECKED IN!';
+                resultMessage.textContent = res.message;
+                resultDetails.innerHTML = `<div style="font-size: 3rem;">✅</div>`;
+                // DO NOT closeResult() here
+            } else {
+                // MANUAL (Multi): Fast return
+                closeResult();
+            }
         } else {
             alert('Error: ' + res.message);
         }
@@ -362,7 +369,7 @@ async function checkIn(ticketId, count) {
         console.error(e);
         alert('Check-in failed');
     } finally {
-        // Reset flag after a short delay (shorter now since we closed)
+        // Reset flag after a short delay
         setTimeout(() => {
             window.isProcessingCheckIn = false;
         }, 1000);
