@@ -180,6 +180,14 @@ router.post('/gatekeeper/check_in', requireGatekeeper, async (req, res) => {
 
         console.log(`📥 Check-in request received: TicketID=${ticket_id}, RequestedCount=${checkInCount}`);
 
+        // 1. Strict Input Validation
+        if (!ticket_id) {
+            return res.status(400).json({ success: false, message: 'Missing Ticket ID' });
+        }
+        if (checkInCount < 1) {
+            return res.status(400).json({ success: false, message: 'Invalid count' });
+        }
+
         await client.query('BEGIN');
 
         // Lock the row
@@ -231,6 +239,19 @@ router.post('/gatekeeper/check_in', requireGatekeeper, async (req, res) => {
         const updatedRow = updateResult.rows[0];
         console.log(`✅ Check-in successful: Ticket ${ticket_id} - New State: Used=${updatedRow.used_count}/${total}, UsedAt=${updatedRow.used_at}`);
 
+        // Emit Real-time Update
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('ticket_updated', {
+                ticket_id: ticket_id,
+                remaining: total - newUsedCount,
+                used_count: newUsedCount,
+                total: total,
+                action: 'check-in',
+                count: checkInCount
+            });
+        }
+
         return res.json({
             success: true,
             message: `Successfully checked in ${checkInCount} person(s)`
@@ -239,7 +260,7 @@ router.post('/gatekeeper/check_in', requireGatekeeper, async (req, res) => {
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('❌ CHECK-IN SERVER ERROR:', error);
-        return res.status(500).json({ success: false, message: 'Server error' });
+        return res.status(500).json({ success: false, message: 'Server error: ' + error.message });
     } finally {
         client.release();
     }

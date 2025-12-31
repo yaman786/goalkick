@@ -431,7 +431,56 @@
 
     <!-- QR Scanner Library -->
     <script src="https://unpkg.com/@aspect-ratio/qr-scanner@1.4.2/qr-scanner-worker.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/js/scanner.js"></script>
+
+    <script>
+        // Real-time Update Listener
+        const socket = io();
+
+        socket.on('connect', () => {
+            console.log('🔌 Connected to live updates');
+        });
+
+        socket.on('ticket_updated', (data) => {
+            console.log('🔄 Ticket update received:', data);
+
+            // If the result overlay is open and showing THIS ticket, update the display
+            if (window.currentTicketId && window.currentTicketId === data.ticket_id) {
+                // If fully used now
+                if (data.remaining <= 0) {
+                    // Close overlay or show fully used message
+                    // Ideally, re-trigger validation to show the red screen?
+                    // Or just update the text.
+                    // Re-validating is safest to show correct state (RED/GREEN)
+                    // But we might need the code.
+
+                    // For now, let's try to update the texts if they exist
+                    const resultDetails = document.getElementById('resultDetails');
+                    if (resultDetails) {
+                        // Quick hacky update or re-fetch
+                        // The cleanest way is to just alert the user or close and force rescan?
+                        // "Status changed externally"
+
+                        const msg = document.getElementById('resultMessage');
+                        if (msg) msg.textContent = `Update: ${data.remaining} remaining`;
+
+                        alert('⚠️ Update: Another gatekeeper checked this ticket in. remaining: ' + data.remaining);
+                        closeResult(); // Force close to prevent stale actions
+                    }
+                } else {
+                    // Still valid, just less count
+                    const msg = document.getElementById('resultMessage');
+                    if (msg) msg.textContent = `Update: ${data.remaining} remaining`;
+
+                    // If we are in multi-mode, maybe refresh?
+                    alert('ℹ️ Update: Check-in processed elsewhere. Remaining: ' + data.remaining);
+                    // Ideally we would refresh the buttons but closing is safer for v1
+                    closeResult();
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

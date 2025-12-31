@@ -225,6 +225,8 @@ function showResult(result) {
             const isSingle = result.isSingle || (total === 1);
 
             // 1. Single Ticket UI (Simpler)
+            window.currentTicketId = result.ticket.id; // Expose for socket updates
+
             if (isSingle) {
                 resultMessage.textContent = 'Ticket Valid. Allow entry.';
                 resultDetails.innerHTML = `
@@ -240,6 +242,7 @@ function showResult(result) {
             }
             // 2. Multi Ticket UI (Advanced)
             else {
+                window.currentTicketId = result.ticket.id; // Expose for socket updates
                 resultMessage.textContent = 'Select check-in option:';
                 resultDetails.innerHTML = `
                     <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">

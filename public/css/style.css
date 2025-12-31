@@ -500,6 +500,13 @@ img {
     margin-top: var(--space-xs);
 }
 
+/* Fix for date picker icon visibility in dark mode */
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.8;
+    cursor: pointer;
+}
+
 /* ============================================
    CHECKOUT
    ============================================ */
