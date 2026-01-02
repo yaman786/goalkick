@@ -222,6 +222,54 @@
         <!-- Verification Modal Removed -->
 
 
+        <!-- Ticket Verification Modal (Existing) -->
+        <!-- ... (Assuming verification modal code might be here or was removed, placing new modal below) ... -->
+
+        <!-- POPUP POSTER MODAL -->
+        <div id="posterPopup" class="popup-overlay">
+            <div class="popup-content">
+                <button class="popup-close-btn" onclick="closePopup()">&times;</button>
+                <a href="/match/1"> <!-- Link to match/booking if clicked (optional UX enhancement) -->
+                    <img src="/images/popup-poster.png" alt="Saubhagya Gold Cup Poster" class="popup-poster">
+                </a>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const popup = document.getElementById('posterPopup');
+                const hasSeenPopup = sessionStorage.getItem('popupSeen_v1'); // Versioning key to reset if needed
+
+                // Show popup if not seen in this session
+                if (!hasSeenPopup) {
+                    // Small delay for better UX (let page load first)
+                    setTimeout(() => {
+                        popup.style.display = 'flex';
+                        // Force reflow for transition
+                        popup.offsetHeight;
+                        popup.classList.add('show');
+                    }, 1000); // 1 second delay
+                }
+            });
+
+            function closePopup() {
+                const popup = document.getElementById('posterPopup');
+                popup.classList.remove('show');
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                }, 300); // Wait for transition
+
+                // Mark as seen for this session
+                sessionStorage.setItem('popupSeen_v1', 'true');
+            }
+
+            // Close on background click
+            document.getElementById('posterPopup').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('posterPopup')) {
+                    closePopup();
+                }
+            });
+        </script>
 </body>
 
 </html>
