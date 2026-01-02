@@ -107,108 +107,110 @@
         <!-- Success Banner Removed -->
 
         <section class="hero saubhagya-hero">
-            <section class="hero saubhagya-hero" style="padding-top: 2rem; padding-bottom: 2rem;">
-                <div class="hero-content">
-                    <!-- Poster Image -->
-                    <div class="hero-poster-container" style="text-align: center; margin-bottom: 2rem;">
-                        <img src="/images/hero-poster.png"
-                            alt="Sahid Prachanda Thaiba Smriti Saubhagya Gold Cup 2081 Poster"
-                            style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-height: 80vh;">
-                    </div>
+            <div class="hero-content">
+                <div class="hero-badge">शहिद प्रचण्ड थैवको स्मृतिमा</div>
+                <h1 class="hero-title">दोस्रो प्रचण्ड थैव<br><span class="text-gold">स्मृति सौभाग्य गोल्ड कप २०८२</span>
+                </h1>
+                <p class="hero-subtitle">बुटवलको शान, फुटबलको गौरव।</p>
 
-                    <div class="hero-actions" style="margin-top: 1rem;">
-                        <a href="#matches" class="btn btn-primary btn-lg"
-                            style="font-size: 1.1rem; padding: 1rem 2rem;">🎟️ टिकट किन्नुहोस्</a>
-                        <a href="/find-ticket" class="btn btn-outline btn-lg"
-                            style="margin-left: 10px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.2);">हजुरको
-                            टिकट खोज्नुहोस्</a>
-                    </div>
+                <div class="hero-actions">
+                    <a href="#matches" class="btn btn-primary btn-lg">टिकट किन्नुहोस्</a>
+                    <a href="/find-ticket" class="btn btn-outline btn-lg"
+                        style="margin-left: 10px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);">हजुरको
+                        टिकट खोज्नुहोस्</a>
+                </div>
 
-                    <!-- Mobile Trust Row (Visible only on Mobile) -->
-                    <div class="trust-row-mobile" style="margin-top: 2rem; opacity: 0.8;">
-                        <div class="trust-item">
-                            <img src="/images/saubhagya-logo.jpg" alt="Club" style="width: 32px; height: 32px;">
-                            <small class="trust-name">आयोजक: सौभाग्य युवा क्लब</small>
-                        </div>
+                <!-- Mobile Trust Row (Visible only on Mobile) -->
+                <div class="trust-row-mobile">
+                    <div class="trust-item">
+                        <span>आयोजक</span>
+                        <img src="/images/saubhagya-logo.jpg" alt="Club">
+                        <small class="trust-name">सौभाग्य युवा क्लब</small>
+                    </div>
+                    <div class="divider-vertical"></div>
+                    <div class="trust-item">
+                        <span>सहयोग</span>
+                        <img src="/images/municipality-logo.jpg" alt="Muni">
+                        <small class="trust-name">बुटवल उप-महानगरपालिका</small>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section class="matches-section" id="matches">
-                <h2 class="section-title">आउँदो खेलहरू</h2>
+        <section class="matches-section" id="matches">
+            <h2 class="section-title">आउँदो खेलहरू</h2>
 
-                <% if (matches.length===0) { %>
-                    <div class="empty-state">
-                        <span class="empty-icon">📅</span>
-                        <h3>कुनै खेल उपलब्ध छैन</h3>
-                        <p>कृपया पछि फेरि चेक गर्नुहोस्!</p>
-                    </div>
-                    <% } else { %>
-                        <div class="matches-grid">
-                            <% matches.forEach(match=> { %>
-                                <div class="match-card">
-                                    <div class="match-date-badge">
-                                        <%= formatDate(match.match_date) %>
-                                    </div>
-
-                                    <div class="match-teams">
-                                        <span class="team home">
-                                            <%= match.team_home %>
-                                        </span>
-                                        <span class="vs">VS</span>
-                                        <span class="team away">
-                                            <%= match.team_away %>
-                                        </span>
-                                    </div>
-
-                                    <div class="match-venue">
-                                        <span class="venue-icon">📍</span>
-                                        <%= match.venue %>
-                                    </div>
-
-                                    <div class="match-info">
-                                        <div class="info-item">
-                                            <span class="info-label">मूल्य</span>
-                                            <span class="info-value price">
-                                                <%= formatPrice(match.price) %>
-                                            </span>
-                                        </div>
-                                        <div class="info-item">
-                                            <span class="info-label">बाँकी सिट</span>
-                                            <span
-                                                class="info-value seats <%= match.available_seats < 50 ? 'low' : '' %>">
-                                                <%= typeof formatSeats==='function' ? formatSeats(match.available_seats)
-                                                    : match.available_seats %> / <%= typeof formatSeats==='function' ?
-                                                        formatSeats(match.total_seats) : match.total_seats %>
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <% if (match.available_seats> 0) { %>
-                                        <a href="/match/<%= match.id %>" class="btn btn-primary btn-block">
-                                            🎟️ टिकट किन्नुहोस्
-                                        </a>
-                                        <% } else { %>
-                                            <button class="btn btn-disabled btn-block" disabled>
-                                                टिकट सकियो
-                                            </button>
-                                            <% } %>
-
-                                                <!-- Trophy Sponsor Strip -->
-                                                <div
-                                                    style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed rgba(255,255,255,0.1); width: 100%; text-align: center;">
-                                                    <p
-                                                        style="font-size: 0.7rem; color: #a0a0b0; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
-                                                        🏆 ट्रफी प्रायोजक: <span
-                                                            style="color: #fbbf24; font-weight: 600;">अमश
-                                                            गुरुङ</span>
-                                                    </p>
-                                                </div>
+            <% if (matches.length===0) { %>
+                <div class="empty-state">
+                    <span class="empty-icon">📅</span>
+                    <h3>कुनै खेल उपलब्ध छैन</h3>
+                    <p>कृपया पछि फेरि चेक गर्नुहोस्!</p>
+                </div>
+                <% } else { %>
+                    <div class="matches-grid">
+                        <% matches.forEach(match=> { %>
+                            <div class="match-card">
+                                <div class="match-date-badge">
+                                    <%= formatDate(match.match_date) %>
                                 </div>
-                                <% }) %>
-                        </div>
-                        <% } %>
-            </section>
+
+                                <div class="match-teams">
+                                    <span class="team home">
+                                        <%= match.team_home %>
+                                    </span>
+                                    <span class="vs">VS</span>
+                                    <span class="team away">
+                                        <%= match.team_away %>
+                                    </span>
+                                </div>
+
+                                <div class="match-venue">
+                                    <span class="venue-icon">📍</span>
+                                    <%= match.venue %>
+                                </div>
+
+                                <div class="match-info">
+                                    <div class="info-item">
+                                        <span class="info-label">मूल्य</span>
+                                        <span class="info-value price">
+                                            <%= formatPrice(match.price) %>
+                                        </span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">बाँकी सिट</span>
+                                        <span class="info-value seats <%= match.available_seats < 50 ? 'low' : '' %>">
+                                            <%= typeof formatSeats==='function' ? formatSeats(match.available_seats) :
+                                                match.available_seats %> / <%= typeof formatSeats==='function' ?
+                                                    formatSeats(match.total_seats) : match.total_seats %>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <% if (match.available_seats> 0) { %>
+                                    <a href="/match/<%= match.id %>" class="btn btn-primary btn-block">
+                                        🎟️ टिकट किन्नुहोस्
+                                    </a>
+                                    <% } else { %>
+                                        <button class="btn btn-disabled btn-block" disabled>
+                                            टिकट सकियो
+                                        </button>
+                                        <% } %>
+
+                                            <!-- Trophy Sponsor Strip -->
+                                            <div
+                                                style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed rgba(255,255,255,0.1); width: 100%; text-align: center;">
+                                                <p
+                                                    style="font-size: 0.7rem; color: #a0a0b0; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                                    🏆 ट्रफी प्रायोजक: <span
+                                                        style="color: #fbbf24; font-weight: 600;">अमश
+                                                        गुरुङ</span>
+                                                </p>
+                                            </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } %>
+        </section>
     </main>
 
     <%- include('partials/sponsors-footer') %>

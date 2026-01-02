@@ -76,6 +76,7 @@ async function addUsedCountColumn() {
             console.error('❌ Migration failed:', error.message);
             console.error('   Error code:', error.code);
         }
+    } finally {
         if (client) {
             try {
                 client.release();
