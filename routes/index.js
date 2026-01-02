@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
         const matches = result.rows;
 
         res.render('index', {
-            title: 'दोस्रो प्रचण्ड थैव स्मृति गोल्ड कप २०८२',
+            title: 'दोस्रो प्रचण्ड थैव स्मृति सौभाग्य गोल्ड कप २०८२',
             matches,
             formatDate: (date) => {
                 return formatBSDate(new Date(date));
